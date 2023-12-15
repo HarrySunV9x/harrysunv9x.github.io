@@ -114,7 +114,7 @@ CMake工程的一般步骤如下：
 3. 生成Makefile
 
    ```shell
-   cmake -G "MinGW Makefiles" .. # 这里 -G 指定生成器，.. 表示项目目录，使用这条命令在当前目录生成 Makefile
+   cmake -G "MinGW Makefiles" .. # 这里 -G 指定生成器，注意后面有.. 表示项目目录，使用这条命令在当前目录生成 Makefile
    ```
 
 4. make

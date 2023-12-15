@@ -317,15 +317,15 @@ else
 接收端代码在大部分方面保持一致，唯一不同的是接口不同。在这里，只涉及到服务端的接收功能。我们不再分段，直接提供完整的代码段：
 
 ```C++
-__android_log_print(ANDROID_LOG_INFO, "AnkiLink", "Starting AnkiSocket");
+__android_log_print(ANDROID_LOG_INFO, "Demo", "Starting DemoSocket");
 //创建套接字
 serv_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 if (serv_sock == -1) {
-    __android_log_print(ANDROID_LOG_ERROR, "AnkiLink", "Socket creation failed: %s",
+    __android_log_print(ANDROID_LOG_ERROR, "Demo", "Socket creation failed: %s",
                         strerror(errno));
     return;
 }
-__android_log_print(ANDROID_LOG_INFO, "AnkiLink", "Socket created successfully");
+__android_log_print(ANDROID_LOG_INFO, "Demo", "Socket created successfully");
 // 将套接字和IP、端口绑定
 memset(&serv_addr, 0, sizeof(serv_addr));  // 清空地址结构
 serv_addr.sin_family = AF_INET;            // 使用IPv4地址
@@ -333,43 +333,43 @@ serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");  // 设置IP地址
 serv_addr.sin_port = htons(50000);         // 设置端口号
     // 绑定套接字
 if (bind(serv_sock, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) == -1) {
-    __android_log_print(ANDROID_LOG_ERROR, "AnkiLink", "Bind failed: %s", strerror(errno));
+    __android_log_print(ANDROID_LOG_ERROR, "Demo", "Bind failed: %s", strerror(errno));
     return;
 }
-__android_log_print(ANDROID_LOG_INFO, "AnkiLink", "Bind successful");
+__android_log_print(ANDROID_LOG_INFO, "Demo", "Bind successful");
 // 监听套接字，设置最大等待连接数
 if (listen(serv_sock, 20) == -1) {
-    __android_log_print(ANDROID_LOG_ERROR, "AnkiLink", "Listen failed: %s", strerror(errno));
+    __android_log_print(ANDROID_LOG_ERROR, "Demo", "Listen failed: %s", strerror(errno));
     return;
 }
-__android_log_print(ANDROID_LOG_INFO, "AnkiLink", "Listening");
+__android_log_print(ANDROID_LOG_INFO, "Demo", "Listening");
 // 接受客户端连接请求
 struct sockaddr_in clnt_addr;
 socklen_t clnt_addr_size = sizeof(clnt_addr);
 int clnt_sock = accept(serv_sock, (struct sockaddr *) &clnt_addr, &clnt_addr_size);
 if (clnt_sock == -1) {
-    __android_log_print(ANDROID_LOG_ERROR, "AnkiLink", "Accept failed: %s", strerror(errno));
+    __android_log_print(ANDROID_LOG_ERROR, "Demo", "Accept failed: %s", strerror(errno));
     return;
 }
-__android_log_print(ANDROID_LOG_INFO, "AnkiLink", "Client connected");
+__android_log_print(ANDROID_LOG_INFO, "Demo", "Client connected");
 // 接收文件名
 char fileNameBuffer[260];
 int fileNameLength = recv(clnt_sock, fileNameBuffer, 260, 0);
 if (fileNameLength <= 0) {
-    __android_log_print(ANDROID_LOG_ERROR, "AnkiLink", "Failed to receive file name: %s",
+    __android_log_print(ANDROID_LOG_ERROR, "Demo", "Failed to receive file name: %s",
                         strerror(errno));
     close(clnt_sock);
     return;
 }
 std::string receivedFileName = fileNameBuffer;
-__android_log_print(ANDROID_LOG_INFO, "AnkiLink", "Received file name");
+__android_log_print(ANDROID_LOG_INFO, "Demo", "Received file name");
 // 构造文件的完整路径
 std::string internalPath = "/data/data/com.harry.apk/";
 std::string fullPath = internalPath + receivedFileName;
 std::ofstream outfile(fullPath, std::ofstream::binary);
 // 检查文件是否成功打开
 if (!outfile) {
-    __android_log_print(ANDROID_LOG_ERROR, "AnkiLink", "Cannot open file: %s",
+    __android_log_print(ANDROID_LOG_ERROR, "Demo", "Cannot open file: %s",
                         fullPath.c_str());
     close(clnt_sock);
     return;
@@ -382,24 +382,145 @@ while ((valread = recv(clnt_sock, buffer, 1024, 0)) > 0) {
 }
 // 检查数据接收是否有错误
 if (valread < 0) {
-    __android_log_print(ANDROID_LOG_ERROR, "AnkiLink", "Error receiving data: %s",
+    __android_log_print(ANDROID_LOG_ERROR, "Demo", "Error receiving data: %s",
                         strerror(errno));
     outfile.close();
     close(clnt_sock);
     return;
 }
-__android_log_print(ANDROID_LOG_INFO, "AnkiLink", "File transfer completed");
+__android_log_print(ANDROID_LOG_INFO, "Demo", "File transfer completed");
 // 关闭文件
 outfile.close();
-__android_log_print(ANDROID_LOG_INFO, "AnkiLink", "File closed");
+__android_log_print(ANDROID_LOG_INFO, "Demo", "File closed");
 // 发送接收确认消息
 const char *RECEIPT_CONFIRMATION = "RECEIPT_CONFIRMED";
 send(clnt_sock, RECEIPT_CONFIRMATION, strlen(RECEIPT_CONFIRMATION) + 1, 0);
 // 关闭客户端套接字
 close(clnt_sock);
-__android_log_print(ANDROID_LOG_INFO, "AnkiLink", "Client socket closed");
+__android_log_print(ANDROID_LOG_INFO, "Demo", "Client socket closed");
 // 关闭套接字
 close(serv_sock);
-__android_log_print(ANDROID_LOG_INFO, "AnkiLink", "Socket closed");
+__android_log_print(ANDROID_LOG_INFO, "Demo", "Socket closed");
 ```
 
+Main函数（Android端）：
+
+需要注意的是，在Android平台，我们需要通过JNI接口实现，而且需要多线程：
+
+```
+#include <jni.h>
+#include <string>
+#include <thread>
+
+#include "DemoSocket.h"
+
+void startSocketOperation() {
+    DemoSocket receiveFileSocket;
+    receiveFileSocket.ReceiveSocket();
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_harry_apk_MainActivity_socketButtonFromJNI(
+        JNIEnv* env,
+        jobject /* this */) {
+    __android_log_print(ANDROID_LOG_INFO, "Demo", "DemoSocket init...");
+    std::thread socketThread(startSocketOperation);
+    socketThread.detach(); // 使线程独立执行
+}
+```
+
+## 示例
+
+本节介绍Windows与Android进行Socket通信示例，代码做简化处理，完整项目见：
+
+[AnkiLink]: https://github.com/HarrySunV9x/AnkiLink
+
+源代码编写：
+
+将前面所述Socket代码打包成DemoSocket类。
+
+Windows端：
+
+```C++
+#include "include/DemoSocket.h"
+
+// 定义DemoSocket类的startSocket方法
+void DemoSocket::startSocket(char *command)
+{
+    // 比较输入的命令是否是"server"
+    if (strcmp(command, "server") == 0)
+    {
+        serverSocket(); // 如果是"server"，则启动Socket服务端
+    }
+    // 比较输入的命令是否是"client"
+    else if (strcmp(command, "client") == 0)
+    {
+        clientSocket(); // 如果是"client"，则启动Socket客户端
+    }
+}
+
+// 主函数
+int main(int argc, char *argv[])
+{
+    // 从命令行参数中获取命令
+    char *command = argv[1];
+    
+    DemoSocket demoSocket; // 实例化DemoSocket类
+    demoSocket.startSocket(command); // 调用startSocket方法
+    return 0;
+}
+```
+
+Android端：
+
+```c++
+#include <jni.h>
+#include <string>
+#include <thread>
+
+#include "DemoSocket.h"
+
+// 定义startSocketOperation函数
+void startSocketOperation() {
+    DemoSocket receiveFileSocket; // 实例化DemoSocket类
+    receiveFileSocket.ReceiveSocket(); // 调用ReceiveSocket方法，启动Socket服务端
+}
+
+// JNI接口函数
+extern "C" JNIEXPORT void JNICALL
+Java_com_harry_apk_MainActivity_socketButtonFromJNI(
+        JNIEnv* env,
+        jobject /* this */) {
+    __android_log_print(ANDROID_LOG_INFO, "DemoLink", "DemoSocket init...");
+    std::thread socketThread(startSocketOperation); // 创建一个线程执行startSocketOperation函数，Android需要使用多线程，否则卡死。
+    socketThread.detach(); // 将线程设置为分离模式，允许它独立运行
+}
+```
+
+CMakeList(Android):
+
+```cmake
+# 设置CMake的最低版本要求
+cmake_minimum_required(VERSION 3.22.1)
+
+# 设置项目名称，这里要和MainActivity.kt里System.loadLibrary("DemoLink")相对应
+project("DemoLink")
+
+# 添加一个共享库到项目，包含native-lib.cpp和DemoSocket.cpp两个源文件
+add_library(${CMAKE_PROJECT_NAME} SHARED
+        native-lib.cpp
+        DemoSocket.cpp
+        )
+
+# 将库链接到Android和log库
+target_link_libraries(${CMAKE_PROJECT_NAME}
+        android
+        log)
+
+```
+
+由于Android native通过CmakeList编译，这里给出代码，windows不做限制。
+
+### 使用
+
+参考完整项目的使用方法与实现，实现了Android点击按钮，然后Windows传输文件可成功的样例。

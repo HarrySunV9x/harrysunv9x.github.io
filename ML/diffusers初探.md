@@ -56,3 +56,32 @@ images = pipe(prompt=prompt).images[0]
 
 ```
 
+# Anything
+
+###### 安装omegaconf
+
+```shell
+pip install omegaconf
+```
+
+###### 引入本地模型
+
+```python
+from diffusers import StableDiffusionPipeline
+import torch
+
+pipeline = StableDiffusionPipeline.from_single_file(
+    "/Users/weisun/Documents/ML/Anything-ink-vivid.fp16.ckpt",
+    torch_dtype=torch.float16,
+    
+)
+pipeline.to("mps")
+
+# 设置提示
+prompt = "masterpiece, earring, 1 girl, royal cloth"
+
+# 生成图像
+images = pipeline(prompt=prompt,num_inference_steps=120).images[0]
+images
+```
+

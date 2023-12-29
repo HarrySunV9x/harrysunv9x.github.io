@@ -40,7 +40,7 @@ jobs:
       id-token: write
     environment:
       name: github-pages
-      url: https://harrysunv9x.github.io/tracy
+      url: harrysunv9x.github.io/tracy
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages

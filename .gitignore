@@ -56,3 +56,6 @@ build/
 # Windows
 Thumbs.db
 ehthumbs.db
+
+# 忽略草稿
+source/_drafs/**

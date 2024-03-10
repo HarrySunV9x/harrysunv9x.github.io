@@ -44,6 +44,11 @@ data: 2024-03-07
    - `.\sdkmanager.bat --install "cmdline-tools;latest"`
    - `flutter doctor --android-licenses`
 
-### 6：运行flutter doctor
+### 6：更换Maven镜像地址：
+
+1. 打开`/path-to-flutter-sdk/packages/flutter_tools/lib/src/http_host_validator.dart`文件，修改`https://maven.google.com/`为 google maven 的国内镜像，如`https://maven.aliyun.com/repository/google/`
+2. 删除`/path-to-flutter-sdk/bin/cache` 文件夹
+
+### 7：运行flutter doctor
 
 最后，运行 `flutter doctor` 命令检查环境是否已正确配置，如果有问题会有对应回显。

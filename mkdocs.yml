@@ -40,6 +40,7 @@ theme:
         - search.share # 搜索结果分享
         - navigation.footer # 页脚提示下一章
         - content.code.copy # 代码段上的赋值按钮
+        - content.tabs.link # 代码段上的链接按钮
 
 markdown_extensions:
     - admonition # 警告语法

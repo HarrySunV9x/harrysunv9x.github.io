@@ -1,0 +1,2210 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../CMake%28Mingw%E7%A4%BA%E4%BE%8B%29/">
+      
+      
+        <link rel="next" href="../Systrace%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.14">
+    
+    
+      
+        <title>Socket编程 - Tracy</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.10ba22f1.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="cyan" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#socket" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Tracy" class="md-header__button md-logo" aria-label="Tracy" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Tracy
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Socket编程
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="cyan" data-md-color-accent="cyan"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="cyan" data-md-color-accent="cyan"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5c-.84 0-1.65.15-2.39.42L12 2M3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29L3.34 7m.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14L3.36 17M20.65 7l-1.77 3.79a7.023 7.023 0 0 0-2.38-4.15l4.15.36m-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29L20.64 17M12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44L12 22Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="分享" aria-label="分享" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+    
+  
+  职业生涯记事本
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../%E5%AE%A2%E6%88%B7%E7%AB%AF/Electron/%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE/" class="md-tabs__link">
+          
+  
+  客户端
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/Pytorch/%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C/" class="md-tabs__link">
+          
+  
+  机器学习
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/CharacterController%E7%A7%BB%E5%8A%A8%E4%B8%8E%E8%B7%B3%E8%B7%83%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81/" class="md-tabs__link">
+          
+  
+  游戏开发
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../%E7%AC%AC%E4%B8%89%E6%96%B9%E8%AF%BB%E7%89%A9/" class="md-tabs__link">
+          
+  
+  第三方读物
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/22%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="md-tabs__link">
+          
+  
+  编码能力
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../%E8%BF%90%E7%BB%B4/Docker/DockerDemo%E2%80%94%E2%80%94Linux%E7%B3%BB%E7%BB%9F%E6%90%AD%E5%BB%BA%E5%BA%94%E7%94%A8%EF%BC%88Panda3D%EF%BC%89/" class="md-tabs__link">
+          
+  
+  运维
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Tracy" class="md-nav__button md-logo" aria-label="Tracy" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5Z"/></svg>
+
+    </a>
+    Tracy
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    职业生涯记事本
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../%E5%AE%A2%E6%88%B7%E7%AB%AF/Electron/%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    客户端
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/Pytorch/%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    机器学习
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/Unity/CharacterController%E7%A7%BB%E5%8A%A8%E4%B8%8E%E8%B7%B3%E8%B7%83%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    游戏开发
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../../%E7%AC%AC%E4%B8%89%E6%96%B9%E8%AF%BB%E7%89%A9/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    第三方读物
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    编码能力
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            编码能力
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_1" id="__nav_6_1_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    编程实践
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_1">
+            <span class="md-nav__icon md-icon"></span>
+            编程实践
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/22%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    22种设计模式
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/%E5%87%BD%E6%95%B0%E8%80%97%E6%97%B6%E8%AE%A1%E7%AE%97/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    函数耗时计算
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    多线程编程
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    异步编程
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    语言能力
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            语言能力
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    基本操作
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%AF%B9%E8%B1%A1%E7%AE%A1%E7%90%86/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    对象管理
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6_2_3" id="__nav_6_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    CorC++
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            CorC++
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CMake%28Mingw%E7%A4%BA%E4%BE%8B%29/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CMake(Mingw示例)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Socket编程
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Socket编程
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      背景
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      概念
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      类型
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      步骤
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      实现
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#socket_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      单Socket方案
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#socket_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      多Socket连接方案
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      示例
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Systrace%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Systrace基本原理
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../popen/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    标准IO函数——popen
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%85%B3%E8%81%94%E5%AE%B9%E5%99%A8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    关联容器
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%88%B7%E9%A2%98%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    刷题常用方法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%A4%96%E9%83%A8%E5%BA%93%E5%BC%95%E7%94%A8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    外部库引用
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AE%80%E6%98%93%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    简易日志系统
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../OpenGL/HelloTriangle/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    OpenGL
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../../../%E8%BF%90%E7%BB%B4/Docker/DockerDemo%E2%80%94%E2%80%94Linux%E7%B3%BB%E7%BB%9F%E6%90%AD%E5%BB%BA%E5%BA%94%E7%94%A8%EF%BC%88Panda3D%EF%BC%89/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    运维
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      背景
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      概念
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      类型
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      步骤
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      实现
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#socket_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      单Socket方案
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#socket_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      多Socket连接方案
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      示例
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="socket">Socket编程<a class="headerlink" href="#socket" title="Permanent link">&para;</a></h1>
+<h2 id="_1">背景<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p>在我们日常生活中，进程间通信的应用无处不在。想象一下，某天你在微信上向朋友抱怨工作压力巨大，头都秃了。然后你打开了小红书，准备放松一下，结果映入眼帘一个醒目的开屏广告：“编程天才，也可以是秀发健康专家。”</p>
+<p>这种大数据驱动的精准广告推荐，可以通过分析你在手机聊天软件、输入法、音频设备等应用中的数据来实现。它涉及到进程间的通信，将你可能感兴趣的信息从某个应用拿到小红书中，从而实现个性化的广告推送。</p>
+<p><strong>进程通信，简单说就是让不同的计算机程序之间能够交流和分享信息的方法。</strong>就好比人们之间可以通过电话、短信或互联网来交流一样，计算机程序之间也需要一种方式来沟通。进程通信的方式有很多种，光考试也对这些概念看到很多次了：管道（pipe）、命名管道（FIFO）：、消息队列（message queue）、共享内存（shared memory）、信号量（semaphore）、套接字（socket）。</p>
+<p>如果想在不同设备之间进行通信，比如发送微信消息给朋友、在淘宝下单购物、或回复工作伙伴的电子邮件等，通常都需要使用网络来实现。在各种进程通信方式中，<strong>套接字</strong> 是唯一能够实现不同设备之间通信的方式。</p>
+<p>本文将详细介绍Socket编程，并用实例展示Socket编程在Windows与Android(Linux)平台的实现。</p>
+<h2 id="_2">概念<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>定义</strong>: Socket（套接字）是网络通信的端点，你可以把它想象成电话通话中的电话机。当两台计算机通过网络通信时，它们各自有一个 Socket。</li>
+<li><strong>功能</strong>: 它负责建立、维护、终止网络上的会话，并通过这个会话进行数据的发送和接收。</li>
+</ul>
+<h2 id="_3">类型<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>流式 Socket (TCP)</strong>: 提供面向连接、可靠的数据流服务。使用 TCP（传输控制协议）保证数据完整性和顺序性，适用于要求高可靠性的应用，如网页服务器。</li>
+<li><strong>数据报 Socket (UDP)</strong>: 提供无连接的服务，发送和接收数据报文。使用 UDP（用户数据报协议），适用于实时应用，如在线游戏</li>
+</ul>
+<h2 id="_4">步骤<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p>以下表格同步了服务端与客户端套接字的流程：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">服务端（接收）</th>
+<th style="text-align: center;">客户端（发送）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>创建 Socket</strong>: 创建服务端套接字，指定使用 TCP 或 UDP。</td>
+<td style="text-align: center;"><strong>创建 Socket</strong>: 指定使用 TCP 或 UDP。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>绑定 Socket</strong>: 将创建的 Socket 绑定到特定的 IP 地址和端口上。</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>监听连接</strong>: 对于 TCP，监听来自客户端的连接请求。</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>接受连接</strong>: 创建客户端套接字，接受客户端的连接。</td>
+<td style="text-align: center;"><strong>建立连接</strong>: 对于 TCP，连接到服务器的 IP 地址和端口。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>数据交换</strong>: 接收和发送数据。</td>
+<td style="text-align: center;"><strong>数据交换</strong>: 发送请求并接收服务器的响应。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>关闭 Socket</strong>: 结束通信，关闭客户端套接字，等待其他连接。</td>
+<td style="text-align: center;"><strong>关闭 Socket</strong>: 结束通信，关闭连接。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_5">实现<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h3 id="socket_1">单Socket方案<a class="headerlink" href="#socket_1" title="Permanent link">&para;</a></h3>
+<p>以传输文件（TCP）为例，介绍Socket的实现。</p>
+<h4 id="windows">Windows端<a class="headerlink" href="#windows" title="Permanent link">&para;</a></h4>
+<h5 id="_6">服务端<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h5>
+<p>引入头文件：</p>
+<div class="language-c++ highlight"><span class="filename">C++</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><a href="#__codelineno-0-1"><span class="linenos" data-linenos="1 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><a href="#__codelineno-0-2"><span class="linenos" data-linenos="2 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;winsock2.h&gt;</span><span class="c1"> //注意这个，Windows需要引入该文件</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a><a href="#__codelineno-0-3"><span class="linenos" data-linenos="3 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sstream&gt;</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a><a href="#__codelineno-0-4"><span class="linenos" data-linenos="4 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;fstream&gt;</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a><a href="#__codelineno-0-5"><span class="linenos" data-linenos="5 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string&gt;</span>
+</code></pre></div>
+<p>开启wsaData: </p>
+<div class="language-C++ highlight"><span class="filename">C++</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><a href="#__codelineno-1-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">WSADATA</span><span class="w"> </span><span class="n">wsaData</span><span class="p">;</span><span class="w"> </span><span class="c1">// 声明wsa数据，Windows需要</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a><a href="#__codelineno-1-2"><span class="linenos" data-linenos="2 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">WSAStartup</span><span class="p">(</span><span class="n">MAKEWORD</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">wsaData</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a><a href="#__codelineno-1-3"><span class="linenos" data-linenos="3 "></span></a><span class="p">{</span><span class="w"> </span><span class="c1">// 传入版本、数据，启动wsaData</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4"></a><a href="#__codelineno-1-4"><span class="linenos" data-linenos="4 "></span></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;WSA Start Up Error!&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a><a href="#__codelineno-1-5"><span class="linenos" data-linenos="5 "></span></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6"></a><a href="#__codelineno-1-6"><span class="linenos" data-linenos="6 "></span></a><span class="p">}</span>
+</code></pre></div>
+<p>创建套接字(socket)：</p>
+<div class="language-C++ highlight"><span class="filename">C++</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><a href="#__codelineno-2-1"><span class="linenos" data-linenos="1 "></span></a><span class="c1">// 创建套接字。PF_INET代表IPv4协议族，SOCK_STREAM表示TCP连接，IPPROTO_TCP指定使用TCP协议</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a><a href="#__codelineno-2-2"><span class="linenos" data-linenos="2 "></span></a><span class="n">SOCKET</span><span class="w"> </span><span class="n">linkSocket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">socket</span><span class="p">(</span><span class="n">PF_INET</span><span class="p">,</span><span class="w"> </span><span class="n">SOCK_STREAM</span><span class="p">,</span><span class="w"> </span><span class="n">IPPROTO_TCP</span><span class="p">);</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a><a href="#__codelineno-2-3"><span class="linenos" data-linenos="3 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">linkSocket</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">INVALID_SOCKET</span><span class="p">)</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a><a href="#__codelineno-2-4"><span class="linenos" data-linenos="4 "></span></a><span class="p">{</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a><a href="#__codelineno-2-5"><span class="linenos" data-linenos="5 "></span></a><span class="w">    </span><span class="n">errorMessage</span><span class="p">(</span><span class="s">&quot;Create&quot;</span><span class="p">);</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a><a href="#__codelineno-2-6"><span class="linenos" data-linenos="6 "></span></a><span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7"></a><a href="#__codelineno-2-7"><span class="linenos" data-linenos="7 "></span></a><span class="p">}</span>
+</code></pre></div>
+<p>绑定套接字(bind)：</p>
+<div class="language-C++ highlight"><span class="filename">C++</span><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><a href="#__codelineno-3-1"><span class="linenos" data-linenos=" 1 "></span></a><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sockAddr</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">sockAddr</span><span class="p">));</span><span class="w">                </span><span class="c1">// 确保sockAddr结构被清零。memset用于填充内存块，这里用0填充</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a><a href="#__codelineno-3-2"><span class="linenos" data-linenos=" 2 "></span></a><span class="n">sockAddr</span><span class="p">.</span><span class="n">sin_family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PF_INET</span><span class="p">;</span><span class="w">                         </span><span class="c1">// 设置套接字地址的家族为IPv4</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3"></a><a href="#__codelineno-3-3"><span class="linenos" data-linenos=" 3 "></span></a><span class="n">sockAddr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inet_addr</span><span class="p">(</span><span class="n">DEFAULT_ADDRESS</span><span class="p">);</span><span class="w"> </span><span class="c1">// 设置IP地址。inet_addr将十进制的IP地址转换为网络字节顺序</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4"></a><a href="#__codelineno-3-4"><span class="linenos" data-linenos=" 4 "></span></a><span class="n">sockAddr</span><span class="p">.</span><span class="n">sin_port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">htons</span><span class="p">(</span><span class="n">DEFAULT_PORT</span><span class="p">);</span><span class="w">               </span><span class="c1">// 设置端口号。htons确保端口号的字节顺序符合网络标准</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5"></a><a href="#__codelineno-3-5"><span class="linenos" data-linenos=" 5 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">bind</span><span class="p">(</span><span class="n">linkSocket</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">SOCKADDR</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">sockAddr</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">SOCKADDR</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">SOCKET_ERROR</span><span class="p">)</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6"></a><a href="#__codelineno-3-6"><span class="linenos" data-linenos=" 6 "></span></a><span class="p">{</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7"></a><a href="#__codelineno-3-7"><span class="linenos" data-linenos=" 7 "></span></a><span class="w">    </span><span class="n">errorMessage</span><span class="p">(</span><span class="s">&quot;Bind&quot;</span><span class="p">);</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8"></a><a href="#__codelineno-3-8"><span class="linenos" data-linenos=" 8 "></span></a><span class="w">    </span><span class="n">closesocket</span><span class="p">(</span><span class="n">linkSocket</span><span class="p">);</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9"></a><a href="#__codelineno-3-9"><span class="linenos" data-linenos=" 9 "></span></a><span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10"></a><a href="#__codelineno-3-10"><span class="linenos" data-linenos="10 "></span></a><span class="p">}</span>
+</code></pre></div>
+<p>监听套接字(listen)：</p>
+<div class="language-C++ highlight"><span class="filename">C++</span><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><a href="#__codelineno-4-1"><span class="linenos" data-linenos="1 "></span></a><span class="c1">// 监听套接字，设置最大等待连接数</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2"></a><a href="#__codelineno-4-2"><span class="linenos" data-linenos="2 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">listen</span><span class="p">(</span><span class="n">linkSocket</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">SOCKET_ERROR</span><span class="p">)</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3"></a><a href="#__codelineno-4-3"><span class="linenos" data-linenos="3 "></span></a><span class="p">{</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4"></a><a href="#__codelineno-4-4"><span class="linenos" data-linenos="4 "></span></a><span class="w">    </span><span class="n">errorMessage</span><span class="p">(</span><span class="s">&quot;Listen&quot;</span><span class="p">);</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5"></a><a href="#__codelineno-4-5"><span class="linenos" data-linenos="5 "></span></a><span class="w">    </span><span class="n">closesocket</span><span class="p">(</span><span class="n">linkSocket</span><span class="p">);</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6"></a><a href="#__codelineno-4-6"><span class="linenos" data-linenos="6 "></span></a><span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7"></a><a href="#__codelineno-4-7"><span class="linenos" data-linenos="7 "></span></a><span class="p">}</span>
+</code></pre></div>
+<p>接受连接，创建客户端套接字建立连接(accept)：</p>
+<div class="language-C++ highlight"><span class="filename">C++</span><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><a href="#__codelineno-5-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">SOCKADDR</span><span class="w"> </span><span class="n">clntAddr</span><span class="p">;</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2"></a><a href="#__codelineno-5-2"><span class="linenos" data-linenos="2 "></span></a><span class="kt">int</span><span class="w"> </span><span class="n">nSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">SOCKADDR</span><span class="p">);</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3"></a><a href="#__codelineno-5-3"><span class="linenos" data-linenos="3 "></span></a><span class="n">SOCKET</span><span class="w"> </span><span class="n">clntSock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">accept</span><span class="p">(</span><span class="n">linkSocket</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">SOCKADDR</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">clntAddr</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">nSize</span><span class="p">);</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4"></a><a href="#__codelineno-5-4"><span class="linenos" data-linenos="4 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">clntSock</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">INVALID_SOCKET</span><span class="p">)</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5"></a><a href="#__codelineno-5-5"><span class="linenos" data-linenos="5 "></span></a><span class="p">{</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6"></a><a href="#__codelineno-5-6"><span class="linenos" data-linenos="6 "></span></a><span class="w">    </span><span class="n">errorMessage</span><span class="p">(</span><span class="s">&quot;Accept&quot;</span><span class="p">);</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7"></a><a href="#__codelineno-5-7"><span class="linenos" data-linenos="7 "></span></a><span class="w">    </span><span class="n">closesocket</span><span class="p">(</span><span class="n">linkSocket</span><span class="p">);</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8"></a><a href="#__codelineno-5-8"><span class="linenos" data-linenos="8 "></span></a><span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9"></a><a href="#__codelineno-5-9"><span class="linenos" data-linenos="9 "></span></a><span class="p">}</span>
+</code></pre></div>
+<p>数据交换，接收文件名，接收文件(recv)：</p>
+<div class="language-C++ highlight"><span class="filename">C++</span><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><a href="#__codelineno-6-1"><span class="linenos" data-linenos=" 1 "></span></a><span class="c1">// 接收文件名</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2"></a><a href="#__codelineno-6-2"><span class="linenos" data-linenos=" 2 "></span></a><span class="kt">char</span><span class="w"> </span><span class="n">fileNameBuffer</span><span class="p">[</span><span class="mi">260</span><span class="p">];</span><span class="w"> </span><span class="c1">// 假定文件名不会超过260个字符</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3"></a><a href="#__codelineno-6-3"><span class="linenos" data-linenos=" 3 "></span></a><span class="kt">int</span><span class="w"> </span><span class="n">fileNameLength</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">recv</span><span class="p">(</span><span class="n">clntSock</span><span class="p">,</span><span class="w"> </span><span class="n">fileNameBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">260</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4"></a><a href="#__codelineno-6-4"><span class="linenos" data-linenos=" 4 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">fileNameLength</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5"></a><a href="#__codelineno-6-5"><span class="linenos" data-linenos=" 5 "></span></a><span class="p">{</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6"></a><a href="#__codelineno-6-6"><span class="linenos" data-linenos=" 6 "></span></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Failed to receive file name.&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7"></a><a href="#__codelineno-6-7"><span class="linenos" data-linenos=" 7 "></span></a><span class="w">    </span><span class="n">closesocket</span><span class="p">(</span><span class="n">clntSock</span><span class="p">);</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8"></a><a href="#__codelineno-6-8"><span class="linenos" data-linenos=" 8 "></span></a><span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9"></a><a href="#__codelineno-6-9"><span class="linenos" data-linenos=" 9 "></span></a><span class="p">}</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10"></a><a href="#__codelineno-6-10"><span class="linenos" data-linenos="10 "></span></a><span class="c1">// 文件接收和写入</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11"></a><a href="#__codelineno-6-11"><span class="linenos" data-linenos="11 "></span></a><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">receivedFileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fileNameBuffer</span><span class="p">;</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12"></a><a href="#__codelineno-6-12"><span class="linenos" data-linenos="12 "></span></a><span class="n">std</span><span class="o">::</span><span class="n">ofstream</span><span class="w"> </span><span class="nf">outfile</span><span class="p">(</span><span class="n">receivedFileName</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">ofstream</span><span class="o">::</span><span class="n">binary</span><span class="p">);</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13"></a><a href="#__codelineno-6-13"><span class="linenos" data-linenos="13 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">outfile</span><span class="p">)</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14"></a><a href="#__codelineno-6-14"><span class="linenos" data-linenos="14 "></span></a><span class="p">{</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15"></a><a href="#__codelineno-6-15"><span class="linenos" data-linenos="15 "></span></a><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Error: Cannot open &#39;received_file.txt&#39; for writing.&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<a id="__codelineno-6-16" name="__codelineno-6-16"></a><a href="#__codelineno-6-16"><span class="linenos" data-linenos="16 "></span></a><span class="n">closesocket</span><span class="p">(</span><span class="n">clntSock</span><span class="p">);</span>
+<a id="__codelineno-6-17" name="__codelineno-6-17"></a><a href="#__codelineno-6-17"><span class="linenos" data-linenos="17 "></span></a><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-6-18" name="__codelineno-6-18"></a><a href="#__codelineno-6-18"><span class="linenos" data-linenos="18 "></span></a><span class="p">}</span>
+<a id="__codelineno-6-19" name="__codelineno-6-19"></a><a href="#__codelineno-6-19"><span class="linenos" data-linenos="19 "></span></a><span class="c1">// 从socket读取数据并写入文件</span>
+<a id="__codelineno-6-20" name="__codelineno-6-20"></a><a href="#__codelineno-6-20"><span class="linenos" data-linenos="20 "></span></a><span class="kt">int</span><span class="w"> </span><span class="n">valread</span><span class="p">;</span>
+<a id="__codelineno-6-21" name="__codelineno-6-21"></a><a href="#__codelineno-6-21"><span class="linenos" data-linenos="21 "></span></a><span class="kt">char</span><span class="w"> </span><span class="n">buffer</span><span class="p">[</span><span class="mi">1024</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<a id="__codelineno-6-22" name="__codelineno-6-22"></a><a href="#__codelineno-6-22"><span class="linenos" data-linenos="22 "></span></a><span class="k">while</span><span class="w"> </span><span class="p">((</span><span class="n">valread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">recv</span><span class="p">(</span><span class="n">clntSock</span><span class="p">,</span><span class="w"> </span><span class="n">buffer</span><span class="p">,</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<a id="__codelineno-6-23" name="__codelineno-6-23"></a><a href="#__codelineno-6-23"><span class="linenos" data-linenos="23 "></span></a><span class="p">{</span>
+<a id="__codelineno-6-24" name="__codelineno-6-24"></a><a href="#__codelineno-6-24"><span class="linenos" data-linenos="24 "></span></a><span class="w">    </span><span class="n">outfile</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span><span class="w"> </span><span class="n">valread</span><span class="p">);</span>
+<a id="__codelineno-6-25" name="__codelineno-6-25"></a><a href="#__codelineno-6-25"><span class="linenos" data-linenos="25 "></span></a><span class="p">}</span>
+<a id="__codelineno-6-26" name="__codelineno-6-26"></a><a href="#__codelineno-6-26"><span class="linenos" data-linenos="26 "></span></a><span class="c1">// 读取socket时的错误处理</span>
+<a id="__codelineno-6-27" name="__codelineno-6-27"></a><a href="#__codelineno-6-27"><span class="linenos" data-linenos="27 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">valread</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">SOCKET_ERROR</span><span class="p">)</span>
+<a id="__codelineno-6-28" name="__codelineno-6-28"></a><a href="#__codelineno-6-28"><span class="linenos" data-linenos="28 "></span></a><span class="p">{</span>
+<a id="__codelineno-6-29" name="__codelineno-6-29"></a><a href="#__codelineno-6-29"><span class="linenos" data-linenos="29 "></span></a><span class="w">    </span><span class="n">errorMessage</span><span class="p">(</span><span class="s">&quot;Receive&quot;</span><span class="p">);</span>
+<a id="__codelineno-6-30" name="__codelineno-6-30"></a><a href="#__codelineno-6-30"><span class="linenos" data-linenos="30 "></span></a><span class="w">    </span><span class="n">outfile</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
+<a id="__codelineno-6-31" name="__codelineno-6-31"></a><a href="#__codelineno-6-31"><span class="linenos" data-linenos="31 "></span></a><span class="w">    </span><span class="n">closesocket</span><span class="p">(</span><span class="n">clntSock</span><span class="p">);</span>
+<a id="__codelineno-6-32" name="__codelineno-6-32"></a><a href="#__codelineno-6-32"><span class="linenos" data-linenos="32 "></span></a><span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-6-33" name="__codelineno-6-33"></a><a href="#__codelineno-6-33"><span class="linenos" data-linenos="33 "></span></a><span class="p">}</span>
+<a id="__codelineno-6-34" name="__codelineno-6-34"></a><a href="#__codelineno-6-34"><span class="linenos" data-linenos="34 "></span></a><span class="c1">// 数据传输后关闭文件</span>
+<a id="__codelineno-6-35" name="__codelineno-6-35"></a><a href="#__codelineno-6-35"><span class="linenos" data-linenos="35 "></span></a><span class="n">outfile</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
+</code></pre></div>
+<p>结束通信，关闭客户端套接字，等待其他连接：</p>
+<div class="language-C++ highlight"><span class="filename">C++</span><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a><a href="#__codelineno-7-1"><span class="linenos" data-linenos="1 "></span></a><span class="n">closesocket</span><span class="p">(</span><span class="n">clntSock</span><span class="p">);</span>
+</code></pre></div>
+<h5 id="_7">客户端<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h5>
+<p>初始化文件选择对话框</p>
+<div class="language-C++ highlight"><span class="filename">C++</span><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1"></a><a href="#__codelineno-8-1"><span class="linenos" data-linenos=" 1 "></span></a><span class="n">OPENFILENAME</span><span class="w"> </span><span class="n">ofn</span><span class="p">;</span><span class="w"> </span><span class="c1">// Windows文件选择对话框结构</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2"></a><a href="#__codelineno-8-2"><span class="linenos" data-linenos=" 2 "></span></a><span class="kt">char</span><span class="w"> </span><span class="n">szFile</span><span class="p">[</span><span class="mi">260</span><span class="p">];</span><span class="w"> </span><span class="c1">// 存储选中的文件名</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3"></a><a href="#__codelineno-8-3"><span class="linenos" data-linenos=" 3 "></span></a>
+<a id="__codelineno-8-4" name="__codelineno-8-4"></a><a href="#__codelineno-8-4"><span class="linenos" data-linenos=" 4 "></span></a><span class="c1">// 初始化文件选择对话框</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5"></a><a href="#__codelineno-8-5"><span class="linenos" data-linenos=" 5 "></span></a><span class="n">ZeroMemory</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ofn</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">ofn</span><span class="p">));</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6"></a><a href="#__codelineno-8-6"><span class="linenos" data-linenos=" 6 "></span></a><span class="n">ofn</span><span class="p">.</span><span class="n">lStructSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">ofn</span><span class="p">);</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7"></a><a href="#__codelineno-8-7"><span class="linenos" data-linenos=" 7 "></span></a><span class="n">ofn</span><span class="p">.</span><span class="n">hwndOwner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8"></a><a href="#__codelineno-8-8"><span class="linenos" data-linenos=" 8 "></span></a><span class="n">ofn</span><span class="p">.</span><span class="n">lpstrFile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">szFile</span><span class="p">;</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9"></a><a href="#__codelineno-8-9"><span class="linenos" data-linenos=" 9 "></span></a><span class="n">ofn</span><span class="p">.</span><span class="n">lpstrFile</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">&#39;\0&#39;</span><span class="p">;</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10"></a><a href="#__codelineno-8-10"><span class="linenos" data-linenos="10 "></span></a><span class="n">ofn</span><span class="p">.</span><span class="n">nMaxFile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">szFile</span><span class="p">);</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11"></a><a href="#__codelineno-8-11"><span class="linenos" data-linenos="11 "></span></a><span class="n">ofn</span><span class="p">.</span><span class="n">lpstrFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;All</span><span class="se">\0</span><span class="s">*.*</span><span class="se">\0</span><span class="s">Text</span><span class="se">\0</span><span class="s">*.TXT</span><span class="se">\0</span><span class="s">&quot;</span><span class="p">;</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12"></a><a href="#__codelineno-8-12"><span class="linenos" data-linenos="12 "></span></a><span class="n">ofn</span><span class="p">.</span><span class="n">nFilterIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13"></a><a href="#__codelineno-8-13"><span class="linenos" data-linenos="13 "></span></a><span class="n">ofn</span><span class="p">.</span><span class="n">lpstrFileTitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14"></a><a href="#__codelineno-8-14"><span class="linenos" data-linenos="14 "></span></a><span class="n">ofn</span><span class="p">.</span><span class="n">nMaxFileTitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-8-15" name="__codelineno-8-15"></a><a href="#__codelineno-8-15"><span class="linenos" data-linenos="15 "></span></a><span class="n">ofn</span><span class="p">.</span><span class="n">lpstrInitialDir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<a id="__codelineno-8-16" name="__codelineno-8-16"></a><a href="#__codelineno-8-16"><span class="linenos" data-linenos="16 "></span></a><span class="n">ofn</span><span class="p">.</span><span class="n">Flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OFN_PATHMUSTEXIST</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">OFN_FILEMUSTEXIST</span><span class="p">;</span>
+</code></pre></div>
+<p>建立连接：</p>
+<div class="language-text highlight"><span class="filename">Text Only</span><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1"></a><a href="#__codelineno-9-1"><span class="linenos" data-linenos="1 "></span></a>// 连接到服务器
+<a id="__codelineno-9-2" name="__codelineno-9-2"></a><a href="#__codelineno-9-2"><span class="linenos" data-linenos="2 "></span></a>if (connect(linkSocket, (SOCKADDR *)&amp;sockAddr, sizeof(SOCKADDR)) == SOCKET_ERROR)
+<a id="__codelineno-9-3" name="__codelineno-9-3"></a><a href="#__codelineno-9-3"><span class="linenos" data-linenos="3 "></span></a>{
+<a id="__codelineno-9-4" name="__codelineno-9-4"></a><a href="#__codelineno-9-4"><span class="linenos" data-linenos="4 "></span></a>    errorMessage(&quot;Connect&quot;);
+<a id="__codelineno-9-5" name="__codelineno-9-5"></a><a href="#__codelineno-9-5"><span class="linenos" data-linenos="5 "></span></a>    closesocket(linkSocket);
+<a id="__codelineno-9-6" name="__codelineno-9-6"></a><a href="#__codelineno-9-6"><span class="linenos" data-linenos="6 "></span></a>    return;
+<a id="__codelineno-9-7" name="__codelineno-9-7"></a><a href="#__codelineno-9-7"><span class="linenos" data-linenos="7 "></span></a>}
+</code></pre></div>
+<p>数据交换：</p>
+<div class="language-C++ highlight"><span class="filename">C++</span><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1"></a><a href="#__codelineno-10-1"><span class="linenos" data-linenos=" 1 "></span></a><span class="c1">// 打开文件选择对话框并获取文件名</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2"></a><a href="#__codelineno-10-2"><span class="linenos" data-linenos=" 2 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">GetOpenFileName</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ofn</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3"></a><a href="#__codelineno-10-3"><span class="linenos" data-linenos=" 3 "></span></a><span class="p">{</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4"></a><a href="#__codelineno-10-4"><span class="linenos" data-linenos=" 4 "></span></a><span class="w">    </span><span class="c1">// 使用ofn.lpstrFile作为文件路径</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5"></a><a href="#__codelineno-10-5"><span class="linenos" data-linenos=" 5 "></span></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;File Open Error: File not found or cannot be opened.&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6"></a><a href="#__codelineno-10-6"><span class="linenos" data-linenos=" 6 "></span></a><span class="w">    </span><span class="n">closesocket</span><span class="p">(</span><span class="n">linkSocket</span><span class="p">);</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7"></a><a href="#__codelineno-10-7"><span class="linenos" data-linenos=" 7 "></span></a><span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8"></a><a href="#__codelineno-10-8"><span class="linenos" data-linenos=" 8 "></span></a><span class="p">}</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9"></a><a href="#__codelineno-10-9"><span class="linenos" data-linenos=" 9 "></span></a><span class="c1">// 发送文件名到服务器</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10"></a><a href="#__codelineno-10-10"><span class="linenos" data-linenos="10 "></span></a><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">fileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ofn</span><span class="p">.</span><span class="n">lpstrFile</span><span class="p">;</span><span class="w"> </span><span class="c1">// 获取完整文件路径</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11"></a><a href="#__codelineno-10-11"><span class="linenos" data-linenos="11 "></span></a><span class="k">auto</span><span class="w"> </span><span class="n">lastSlash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fileName</span><span class="p">.</span><span class="n">find_last_of</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\\</span><span class="s">/&quot;</span><span class="p">);</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12"></a><a href="#__codelineno-10-12"><span class="linenos" data-linenos="12 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">lastSlash</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span>
+<a id="__codelineno-10-13" name="__codelineno-10-13"></a><a href="#__codelineno-10-13"><span class="linenos" data-linenos="13 "></span></a><span class="p">{</span>
+<a id="__codelineno-10-14" name="__codelineno-10-14"></a><a href="#__codelineno-10-14"><span class="linenos" data-linenos="14 "></span></a><span class="w">    </span><span class="n">fileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fileName</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">lastSlash</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="c1">// 提取文件名</span>
+<a id="__codelineno-10-15" name="__codelineno-10-15"></a><a href="#__codelineno-10-15"><span class="linenos" data-linenos="15 "></span></a><span class="p">}</span>
+<a id="__codelineno-10-16" name="__codelineno-10-16"></a><a href="#__codelineno-10-16"><span class="linenos" data-linenos="16 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="n">linkSocket</span><span class="p">,</span><span class="w"> </span><span class="n">fileName</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="n">fileName</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">SOCKET_ERROR</span><span class="p">)</span>
+<a id="__codelineno-10-17" name="__codelineno-10-17"></a><a href="#__codelineno-10-17"><span class="linenos" data-linenos="17 "></span></a><span class="p">{</span><span class="w"> </span><span class="c1">// 发送文件名</span>
+<a id="__codelineno-10-18" name="__codelineno-10-18"></a><a href="#__codelineno-10-18"><span class="linenos" data-linenos="18 "></span></a><span class="w">    </span><span class="n">errorMessage</span><span class="p">(</span><span class="s">&quot;Send&quot;</span><span class="p">);</span>
+<a id="__codelineno-10-19" name="__codelineno-10-19"></a><a href="#__codelineno-10-19"><span class="linenos" data-linenos="19 "></span></a><span class="w">    </span><span class="n">closesocket</span><span class="p">(</span><span class="n">linkSocket</span><span class="p">);</span>
+<a id="__codelineno-10-20" name="__codelineno-10-20"></a><a href="#__codelineno-10-20"><span class="linenos" data-linenos="20 "></span></a><span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-10-21" name="__codelineno-10-21"></a><a href="#__codelineno-10-21"><span class="linenos" data-linenos="21 "></span></a><span class="p">}</span>
+<a id="__codelineno-10-22" name="__codelineno-10-22"></a><a href="#__codelineno-10-22"><span class="linenos" data-linenos="22 "></span></a><span class="n">Sleep</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span><span class="w"> </span><span class="c1">// 稍微等待，确保文件名被正确接收</span>
+<a id="__codelineno-10-23" name="__codelineno-10-23"></a><a href="#__codelineno-10-23"><span class="linenos" data-linenos="23 "></span></a>
+<a id="__codelineno-10-24" name="__codelineno-10-24"></a><a href="#__codelineno-10-24"><span class="linenos" data-linenos="24 "></span></a><span class="c1">// 打开并读取文件</span>
+<a id="__codelineno-10-25" name="__codelineno-10-25"></a><a href="#__codelineno-10-25"><span class="linenos" data-linenos="25 "></span></a><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span><span class="w"> </span><span class="nf">infile</span><span class="p">(</span><span class="n">ofn</span><span class="p">.</span><span class="n">lpstrFile</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span><span class="o">::</span><span class="n">binary</span><span class="p">);</span>
+<a id="__codelineno-10-26" name="__codelineno-10-26"></a><a href="#__codelineno-10-26"><span class="linenos" data-linenos="26 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">infile</span><span class="p">)</span>
+<a id="__codelineno-10-27" name="__codelineno-10-27"></a><a href="#__codelineno-10-27"><span class="linenos" data-linenos="27 "></span></a><span class="p">{</span>
+<a id="__codelineno-10-28" name="__codelineno-10-28"></a><a href="#__codelineno-10-28"><span class="linenos" data-linenos="28 "></span></a><span class="w">    </span><span class="n">DWORD</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetLastError</span><span class="p">();</span>
+<a id="__codelineno-10-29" name="__codelineno-10-29"></a><a href="#__codelineno-10-29"><span class="linenos" data-linenos="29 "></span></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;File Open Error: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<a id="__codelineno-10-30" name="__codelineno-10-30"></a><a href="#__codelineno-10-30"><span class="linenos" data-linenos="30 "></span></a><span class="w">    </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="c1">// 退出函数</span>
+<a id="__codelineno-10-31" name="__codelineno-10-31"></a><a href="#__codelineno-10-31"><span class="linenos" data-linenos="31 "></span></a><span class="p">}</span>
+<a id="__codelineno-10-32" name="__codelineno-10-32"></a><a href="#__codelineno-10-32"><span class="linenos" data-linenos="32 "></span></a><span class="c1">// 文件传输逻辑</span>
+<a id="__codelineno-10-33" name="__codelineno-10-33"></a><a href="#__codelineno-10-33"><span class="linenos" data-linenos="33 "></span></a><span class="n">infile</span><span class="p">.</span><span class="n">seekg</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">infile</span><span class="p">.</span><span class="n">end</span><span class="p">);</span><span class="w">     </span><span class="c1">// 设置输入文件流的读取位置到文件末尾</span>
+<a id="__codelineno-10-34" name="__codelineno-10-34"></a><a href="#__codelineno-10-34"><span class="linenos" data-linenos="34 "></span></a><span class="kt">long</span><span class="w"> </span><span class="n">totalSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">infile</span><span class="p">.</span><span class="n">tellg</span><span class="p">();</span><span class="w"> </span><span class="c1">// 获取文件的总大小</span>
+<a id="__codelineno-10-35" name="__codelineno-10-35"></a><a href="#__codelineno-10-35"><span class="linenos" data-linenos="35 "></span></a><span class="n">infile</span><span class="p">.</span><span class="n">seekg</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">infile</span><span class="p">.</span><span class="n">beg</span><span class="p">);</span><span class="w">     </span><span class="c1">// 重新设置文件流的读取位置到文件开始</span>
+<a id="__codelineno-10-36" name="__codelineno-10-36"></a><a href="#__codelineno-10-36"><span class="linenos" data-linenos="36 "></span></a><span class="kt">long</span><span class="w"> </span><span class="n">totalSent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">              </span><span class="c1">// 初始化已发送的数据总量为0</span>
+<a id="__codelineno-10-37" name="__codelineno-10-37"></a><a href="#__codelineno-10-37"><span class="linenos" data-linenos="37 "></span></a><span class="c1">// 循环读取文件并发送数据</span>
+<a id="__codelineno-10-38" name="__codelineno-10-38"></a><a href="#__codelineno-10-38"><span class="linenos" data-linenos="38 "></span></a><span class="kt">char</span><span class="w"> </span><span class="n">buffer</span><span class="p">[</span><span class="mi">1024</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<a id="__codelineno-10-39" name="__codelineno-10-39"></a><a href="#__codelineno-10-39"><span class="linenos" data-linenos="39 "></span></a><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span>
+<a id="__codelineno-10-40" name="__codelineno-10-40"></a><a href="#__codelineno-10-40"><span class="linenos" data-linenos="40 "></span></a><span class="p">{</span>
+<a id="__codelineno-10-41" name="__codelineno-10-41"></a><a href="#__codelineno-10-41"><span class="linenos" data-linenos="41 "></span></a><span class="w">    </span><span class="c1">// 从文件中读取数据到缓冲区</span>
+<a id="__codelineno-10-42" name="__codelineno-10-42"></a><a href="#__codelineno-10-42"><span class="linenos" data-linenos="42 "></span></a><span class="w">    </span><span class="n">infile</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">buffer</span><span class="p">));</span>
+<a id="__codelineno-10-43" name="__codelineno-10-43"></a><a href="#__codelineno-10-43"><span class="linenos" data-linenos="43 "></span></a><span class="w">    </span><span class="c1">// 获取实际读取的字节数</span>
+<a id="__codelineno-10-44" name="__codelineno-10-44"></a><a href="#__codelineno-10-44"><span class="linenos" data-linenos="44 "></span></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">streamsize</span><span class="w"> </span><span class="n">bytes_read</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">infile</span><span class="p">.</span><span class="n">gcount</span><span class="p">();</span>
+<a id="__codelineno-10-45" name="__codelineno-10-45"></a><a href="#__codelineno-10-45"><span class="linenos" data-linenos="45 "></span></a><span class="w">    </span><span class="c1">// 如果读取到数据</span>
+<a id="__codelineno-10-46" name="__codelineno-10-46"></a><a href="#__codelineno-10-46"><span class="linenos" data-linenos="46 "></span></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">bytes_read</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<a id="__codelineno-10-47" name="__codelineno-10-47"></a><a href="#__codelineno-10-47"><span class="linenos" data-linenos="47 "></span></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-10-48" name="__codelineno-10-48"></a><a href="#__codelineno-10-48"><span class="linenos" data-linenos="48 "></span></a><span class="w">        </span><span class="c1">// 通过套接字发送数据</span>
+<a id="__codelineno-10-49" name="__codelineno-10-49"></a><a href="#__codelineno-10-49"><span class="linenos" data-linenos="49 "></span></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="n">linkSocket</span><span class="p">,</span><span class="w"> </span><span class="n">buffer</span><span class="p">,</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">bytes_read</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">SOCKET_ERROR</span><span class="p">)</span>
+<a id="__codelineno-10-50" name="__codelineno-10-50"></a><a href="#__codelineno-10-50"><span class="linenos" data-linenos="50 "></span></a><span class="w">        </span><span class="p">{</span>
+<a id="__codelineno-10-51" name="__codelineno-10-51"></a><a href="#__codelineno-10-51"><span class="linenos" data-linenos="51 "></span></a><span class="w">            </span><span class="n">errorMessage</span><span class="p">(</span><span class="s">&quot;Send failed&quot;</span><span class="p">);</span>
+<a id="__codelineno-10-52" name="__codelineno-10-52"></a><a href="#__codelineno-10-52"><span class="linenos" data-linenos="52 "></span></a><span class="w">            </span><span class="n">infile</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
+<a id="__codelineno-10-53" name="__codelineno-10-53"></a><a href="#__codelineno-10-53"><span class="linenos" data-linenos="53 "></span></a><span class="w">            </span><span class="n">closesocket</span><span class="p">(</span><span class="n">linkSocket</span><span class="p">);</span>
+<a id="__codelineno-10-54" name="__codelineno-10-54"></a><a href="#__codelineno-10-54"><span class="linenos" data-linenos="54 "></span></a><span class="w">            </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-10-55" name="__codelineno-10-55"></a><a href="#__codelineno-10-55"><span class="linenos" data-linenos="55 "></span></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-10-56" name="__codelineno-10-56"></a><a href="#__codelineno-10-56"><span class="linenos" data-linenos="56 "></span></a><span class="w">        </span><span class="c1">// 累加已发送的数据量</span>
+<a id="__codelineno-10-57" name="__codelineno-10-57"></a><a href="#__codelineno-10-57"><span class="linenos" data-linenos="57 "></span></a><span class="w">        </span><span class="n">totalSent</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">bytes_read</span><span class="p">;</span>
+<a id="__codelineno-10-58" name="__codelineno-10-58"></a><a href="#__codelineno-10-58"><span class="linenos" data-linenos="58 "></span></a><span class="w">        </span><span class="c1">// 计算并显示发送进度</span>
+<a id="__codelineno-10-59" name="__codelineno-10-59"></a><a href="#__codelineno-10-59"><span class="linenos" data-linenos="59 "></span></a><span class="w">        </span><span class="kt">double</span><span class="w"> </span><span class="n">progress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">totalSent</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">totalSize</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+<a id="__codelineno-10-60" name="__codelineno-10-60"></a><a href="#__codelineno-10-60"><span class="linenos" data-linenos="60 "></span></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\r</span><span class="s">Progress: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">fixed</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">setprecision</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">progress</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;%&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">flush</span><span class="p">;</span>
+<a id="__codelineno-10-61" name="__codelineno-10-61"></a><a href="#__codelineno-10-61"><span class="linenos" data-linenos="61 "></span></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-10-62" name="__codelineno-10-62"></a><a href="#__codelineno-10-62"><span class="linenos" data-linenos="62 "></span></a>
+<a id="__codelineno-10-63" name="__codelineno-10-63"></a><a href="#__codelineno-10-63"><span class="linenos" data-linenos="63 "></span></a><span class="w">    </span><span class="c1">// 检查是否到达文件末尾</span>
+<a id="__codelineno-10-64" name="__codelineno-10-64"></a><a href="#__codelineno-10-64"><span class="linenos" data-linenos="64 "></span></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">infile</span><span class="p">.</span><span class="n">eof</span><span class="p">())</span>
+<a id="__codelineno-10-65" name="__codelineno-10-65"></a><a href="#__codelineno-10-65"><span class="linenos" data-linenos="65 "></span></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-10-66" name="__codelineno-10-66"></a><a href="#__codelineno-10-66"><span class="linenos" data-linenos="66 "></span></a><span class="w">        </span><span class="c1">// 到达文件末尾，结束循环</span>
+<a id="__codelineno-10-67" name="__codelineno-10-67"></a><a href="#__codelineno-10-67"><span class="linenos" data-linenos="67 "></span></a><span class="w">        </span><span class="k">break</span><span class="p">;</span>
+<a id="__codelineno-10-68" name="__codelineno-10-68"></a><a href="#__codelineno-10-68"><span class="linenos" data-linenos="68 "></span></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-10-69" name="__codelineno-10-69"></a><a href="#__codelineno-10-69"><span class="linenos" data-linenos="69 "></span></a><span class="w">    </span><span class="c1">// 检查文件读取是否失败</span>
+<a id="__codelineno-10-70" name="__codelineno-10-70"></a><a href="#__codelineno-10-70"><span class="linenos" data-linenos="70 "></span></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">infile</span><span class="p">.</span><span class="n">fail</span><span class="p">())</span>
+<a id="__codelineno-10-71" name="__codelineno-10-71"></a><a href="#__codelineno-10-71"><span class="linenos" data-linenos="71 "></span></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-10-72" name="__codelineno-10-72"></a><a href="#__codelineno-10-72"><span class="linenos" data-linenos="72 "></span></a><span class="w">        </span><span class="c1">// 如果读取失败，输出错误信息并返回</span>
+<a id="__codelineno-10-73" name="__codelineno-10-73"></a><a href="#__codelineno-10-73"><span class="linenos" data-linenos="73 "></span></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Failed to read from file.&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<a id="__codelineno-10-74" name="__codelineno-10-74"></a><a href="#__codelineno-10-74"><span class="linenos" data-linenos="74 "></span></a><span class="w">        </span><span class="n">infile</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
+<a id="__codelineno-10-75" name="__codelineno-10-75"></a><a href="#__codelineno-10-75"><span class="linenos" data-linenos="75 "></span></a><span class="w">        </span><span class="n">closesocket</span><span class="p">(</span><span class="n">linkSocket</span><span class="p">);</span>
+<a id="__codelineno-10-76" name="__codelineno-10-76"></a><a href="#__codelineno-10-76"><span class="linenos" data-linenos="76 "></span></a><span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-10-77" name="__codelineno-10-77"></a><a href="#__codelineno-10-77"><span class="linenos" data-linenos="77 "></span></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-10-78" name="__codelineno-10-78"></a><a href="#__codelineno-10-78"><span class="linenos" data-linenos="78 "></span></a><span class="p">}</span>
+<a id="__codelineno-10-79" name="__codelineno-10-79"></a><a href="#__codelineno-10-79"><span class="linenos" data-linenos="79 "></span></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="c1">// 进度条换行</span>
+<a id="__codelineno-10-80" name="__codelineno-10-80"></a><a href="#__codelineno-10-80"><span class="linenos" data-linenos="80 "></span></a><span class="c1">// 关闭文件和socket</span>
+<a id="__codelineno-10-81" name="__codelineno-10-81"></a><a href="#__codelineno-10-81"><span class="linenos" data-linenos="81 "></span></a><span class="n">infile</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
+<a id="__codelineno-10-82" name="__codelineno-10-82"></a><a href="#__codelineno-10-82"><span class="linenos" data-linenos="82 "></span></a><span class="n">shutdown</span><span class="p">(</span><span class="n">linkSocket</span><span class="p">,</span><span class="w"> </span><span class="n">SD_SEND</span><span class="p">);</span>
+</code></pre></div>
+<p>接收服务器回传消息，关闭Socket：</p>
+<div class="language-C++ highlight"><span class="filename">C++</span><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1"></a><a href="#__codelineno-11-1"><span class="linenos" data-linenos=" 1 "></span></a><span class="c1">// 接收服务器传回的数据</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2"></a><a href="#__codelineno-11-2"><span class="linenos" data-linenos=" 2 "></span></a><span class="kt">char</span><span class="w"> </span><span class="n">szBuffer</span><span class="p">[</span><span class="n">MAXBYTE</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3"></a><a href="#__codelineno-11-3"><span class="linenos" data-linenos=" 3 "></span></a><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">recv</span><span class="p">(</span><span class="n">linkSocket</span><span class="p">,</span><span class="w"> </span><span class="n">szBuffer</span><span class="p">,</span><span class="w"> </span><span class="n">MAXBYTE</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4"></a><a href="#__codelineno-11-4"><span class="linenos" data-linenos=" 4 "></span></a><span class="c1">// 输出接收到的数据</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5"></a><a href="#__codelineno-11-5"><span class="linenos" data-linenos=" 5 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ret</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">SOCKET_ERROR</span><span class="p">)</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6"></a><a href="#__codelineno-11-6"><span class="linenos" data-linenos=" 6 "></span></a><span class="p">{</span><span class="w"> </span><span class="c1">// 当返回值为-1，代表连接失败进行错误处理</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7"></a><a href="#__codelineno-11-7"><span class="linenos" data-linenos=" 7 "></span></a><span class="w">    </span><span class="n">errorMessage</span><span class="p">(</span><span class="s">&quot;Recive&quot;</span><span class="p">);</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8"></a><a href="#__codelineno-11-8"><span class="linenos" data-linenos=" 8 "></span></a><span class="p">}</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9"></a><a href="#__codelineno-11-9"><span class="linenos" data-linenos=" 9 "></span></a><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ret</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10"></a><a href="#__codelineno-11-10"><span class="linenos" data-linenos="10 "></span></a><span class="p">{</span><span class="w"> </span><span class="c1">// TCP 协议确保数据的可靠传输。在实际应用中，接收到长度为零的数据包通常被视为连接终止的信号。</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11"></a><a href="#__codelineno-11-11"><span class="linenos" data-linenos="11 "></span></a><span class="w">    </span><span class="c1">// 根据本次应用的场景，对于Windows server来说，在socket客户端场景下这是不正常的。</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12"></a><a href="#__codelineno-11-12"><span class="linenos" data-linenos="12 "></span></a><span class="w">    </span><span class="c1">// 而Android（Linux）服务器场景，文件在接收完后会在finish帧后直接返回一个ack帧关闭连接，因此可能是正常的</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13"></a><a href="#__codelineno-11-13"><span class="linenos" data-linenos="13 "></span></a><span class="w">    </span><span class="c1">// 具体原理暂时不过多研究，有时间可考虑在stackoverfloww上提问下~</span>
+<a id="__codelineno-11-14" name="__codelineno-11-14"></a><a href="#__codelineno-11-14"><span class="linenos" data-linenos="14 "></span></a><span class="w">    </span><span class="c1">// 根据这个现象要注意，Android（Linux）场景下，一次socket只能完成一种行为，无法先接收再确认......</span>
+<a id="__codelineno-11-15" name="__codelineno-11-15"></a><a href="#__codelineno-11-15"><span class="linenos" data-linenos="15 "></span></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Socket Recive 0: If your server is not windows, this copy may finished!&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<a id="__codelineno-11-16" name="__codelineno-11-16"></a><a href="#__codelineno-11-16"><span class="linenos" data-linenos="16 "></span></a><span class="p">}</span>
+<a id="__codelineno-11-17" name="__codelineno-11-17"></a><a href="#__codelineno-11-17"><span class="linenos" data-linenos="17 "></span></a><span class="k">else</span>
+<a id="__codelineno-11-18" name="__codelineno-11-18"></a><a href="#__codelineno-11-18"><span class="linenos" data-linenos="18 "></span></a><span class="p">{</span>
+<a id="__codelineno-11-19" name="__codelineno-11-19"></a><a href="#__codelineno-11-19"><span class="linenos" data-linenos="19 "></span></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Message from server: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">szBuffer</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<a id="__codelineno-11-20" name="__codelineno-11-20"></a><a href="#__codelineno-11-20"><span class="linenos" data-linenos="20 "></span></a><span class="p">}</span>
+</code></pre></div>
+<h4 id="androidlinux">Android（Linux）端<a class="headerlink" href="#androidlinux" title="Permanent link">&para;</a></h4>
+<p>接收端代码在大部分方面保持一致，唯一不同的是接口不同。在这里，只涉及到服务端的接收功能。我们不再分段，直接提供完整的代码段：</p>
+<div class="language-C++ highlight"><span class="filename">C++</span><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1"></a><a href="#__codelineno-12-1"><span class="linenos" data-linenos=" 1 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span><span class="c1">          // 用于标准输入输出函数，如 printf, scanf</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2"></a><a href="#__codelineno-12-2"><span class="linenos" data-linenos=" 2 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string.h&gt;</span><span class="c1">         // 提供字符串操作函数，如 strcpy, strlen</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3"></a><a href="#__codelineno-12-3"><span class="linenos" data-linenos=" 3 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span><span class="c1">         // 包含常用的库函数，如 malloc, free</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4"></a><a href="#__codelineno-12-4"><span class="linenos" data-linenos=" 4 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;unistd.h&gt;</span><span class="c1">         // 提供UNIX标准系统调用的接口，如 read, write, close</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5"></a><a href="#__codelineno-12-5"><span class="linenos" data-linenos=" 5 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;arpa/inet.h&gt;</span><span class="c1">      // 用于网络地址转换函数，如 inet_pton, inet_ntop</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6"></a><a href="#__codelineno-12-6"><span class="linenos" data-linenos=" 6 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sys/socket.h&gt;</span><span class="c1">     // 提供套接字接口函数和数据结构，如 socket, connect</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7"></a><a href="#__codelineno-12-7"><span class="linenos" data-linenos=" 7 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;netinet/in.h&gt;</span><span class="c1">     // 定义IP地址和端口号的结构，如 sockaddr_in</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8"></a><a href="#__codelineno-12-8"><span class="linenos" data-linenos=" 8 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span><span class="c1">         // 用于C++标准输入输出流，如 std::cout, std::cin</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9"></a><a href="#__codelineno-12-9"><span class="linenos" data-linenos=" 9 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;android/log.h&gt;</span><span class="c1">    // 提供Android日志输出函数，如 __android_log_print</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10"></a><a href="#__codelineno-12-10"><span class="linenos" data-linenos="10 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sys/types.h&gt;</span><span class="c1">      // 定义用于系统调用的数据类型，如 pid_t, off_t</span>
+<a id="__codelineno-12-11" name="__codelineno-12-11"></a><a href="#__codelineno-12-11"><span class="linenos" data-linenos="11 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstring&gt;</span><span class="c1">          // 提供C风格字符串处理函数，如 strcpy, strlen</span>
+<a id="__codelineno-12-12" name="__codelineno-12-12"></a><a href="#__codelineno-12-12"><span class="linenos" data-linenos="12 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;fstream&gt;</span><span class="c1">          // 用于C++文件流操作，如 std::ifstream, std::ofstream</span>
+<a id="__codelineno-12-13" name="__codelineno-12-13"></a><a href="#__codelineno-12-13"><span class="linenos" data-linenos="13 "></span></a>
+<a id="__codelineno-12-14" name="__codelineno-12-14"></a><a href="#__codelineno-12-14"><span class="linenos" data-linenos="14 "></span></a><span class="n">__android_log_print</span><span class="p">(</span><span class="n">ANDROID_LOG_INFO</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Starting DemoSocket&quot;</span><span class="p">);</span>
+<a id="__codelineno-12-15" name="__codelineno-12-15"></a><a href="#__codelineno-12-15"><span class="linenos" data-linenos="15 "></span></a><span class="c1">//创建套接字</span>
+<a id="__codelineno-12-16" name="__codelineno-12-16"></a><a href="#__codelineno-12-16"><span class="linenos" data-linenos="16 "></span></a><span class="n">serv_sock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span><span class="w"> </span><span class="n">SOCK_STREAM</span><span class="p">,</span><span class="w"> </span><span class="n">IPPROTO_TCP</span><span class="p">);</span>
+<a id="__codelineno-12-17" name="__codelineno-12-17"></a><a href="#__codelineno-12-17"><span class="linenos" data-linenos="17 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">serv_sock</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-18" name="__codelineno-12-18"></a><a href="#__codelineno-12-18"><span class="linenos" data-linenos="18 "></span></a><span class="w">    </span><span class="n">__android_log_print</span><span class="p">(</span><span class="n">ANDROID_LOG_ERROR</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Socket creation failed: %s&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-19" name="__codelineno-12-19"></a><a href="#__codelineno-12-19"><span class="linenos" data-linenos="19 "></span></a><span class="w">                        </span><span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="p">));</span>
+<a id="__codelineno-12-20" name="__codelineno-12-20"></a><a href="#__codelineno-12-20"><span class="linenos" data-linenos="20 "></span></a><span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-12-21" name="__codelineno-12-21"></a><a href="#__codelineno-12-21"><span class="linenos" data-linenos="21 "></span></a><span class="p">}</span>
+<a id="__codelineno-12-22" name="__codelineno-12-22"></a><a href="#__codelineno-12-22"><span class="linenos" data-linenos="22 "></span></a><span class="n">__android_log_print</span><span class="p">(</span><span class="n">ANDROID_LOG_INFO</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Socket created successfully&quot;</span><span class="p">);</span>
+<a id="__codelineno-12-23" name="__codelineno-12-23"></a><a href="#__codelineno-12-23"><span class="linenos" data-linenos="23 "></span></a><span class="c1">// 将套接字和IP、端口绑定</span>
+<a id="__codelineno-12-24" name="__codelineno-12-24"></a><a href="#__codelineno-12-24"><span class="linenos" data-linenos="24 "></span></a><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">serv_addr</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">serv_addr</span><span class="p">));</span><span class="w">  </span><span class="c1">// 清空地址结构</span>
+<a id="__codelineno-12-25" name="__codelineno-12-25"></a><a href="#__codelineno-12-25"><span class="linenos" data-linenos="25 "></span></a><span class="n">serv_addr</span><span class="p">.</span><span class="n">sin_family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AF_INET</span><span class="p">;</span><span class="w">            </span><span class="c1">// 使用IPv4地址</span>
+<a id="__codelineno-12-26" name="__codelineno-12-26"></a><a href="#__codelineno-12-26"><span class="linenos" data-linenos="26 "></span></a><span class="n">serv_addr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inet_addr</span><span class="p">(</span><span class="s">&quot;127.0.0.1&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// 设置IP地址</span>
+<a id="__codelineno-12-27" name="__codelineno-12-27"></a><a href="#__codelineno-12-27"><span class="linenos" data-linenos="27 "></span></a><span class="n">serv_addr</span><span class="p">.</span><span class="n">sin_port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">htons</span><span class="p">(</span><span class="mi">50000</span><span class="p">);</span><span class="w">         </span><span class="c1">// 设置端口号</span>
+<a id="__codelineno-12-28" name="__codelineno-12-28"></a><a href="#__codelineno-12-28"><span class="linenos" data-linenos="28 "></span></a><span class="w">    </span><span class="c1">// 绑定套接字</span>
+<a id="__codelineno-12-29" name="__codelineno-12-29"></a><a href="#__codelineno-12-29"><span class="linenos" data-linenos="29 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">bind</span><span class="p">(</span><span class="n">serv_sock</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">sockaddr</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">serv_addr</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">serv_addr</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-30" name="__codelineno-12-30"></a><a href="#__codelineno-12-30"><span class="linenos" data-linenos="30 "></span></a><span class="w">    </span><span class="n">__android_log_print</span><span class="p">(</span><span class="n">ANDROID_LOG_ERROR</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Bind failed: %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="p">));</span>
+<a id="__codelineno-12-31" name="__codelineno-12-31"></a><a href="#__codelineno-12-31"><span class="linenos" data-linenos="31 "></span></a><span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-12-32" name="__codelineno-12-32"></a><a href="#__codelineno-12-32"><span class="linenos" data-linenos="32 "></span></a><span class="p">}</span>
+<a id="__codelineno-12-33" name="__codelineno-12-33"></a><a href="#__codelineno-12-33"><span class="linenos" data-linenos="33 "></span></a><span class="n">__android_log_print</span><span class="p">(</span><span class="n">ANDROID_LOG_INFO</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Bind successful&quot;</span><span class="p">);</span>
+<a id="__codelineno-12-34" name="__codelineno-12-34"></a><a href="#__codelineno-12-34"><span class="linenos" data-linenos="34 "></span></a><span class="c1">// 监听套接字，设置最大等待连接数</span>
+<a id="__codelineno-12-35" name="__codelineno-12-35"></a><a href="#__codelineno-12-35"><span class="linenos" data-linenos="35 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">listen</span><span class="p">(</span><span class="n">serv_sock</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-36" name="__codelineno-12-36"></a><a href="#__codelineno-12-36"><span class="linenos" data-linenos="36 "></span></a><span class="w">    </span><span class="n">__android_log_print</span><span class="p">(</span><span class="n">ANDROID_LOG_ERROR</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Listen failed: %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="p">));</span>
+<a id="__codelineno-12-37" name="__codelineno-12-37"></a><a href="#__codelineno-12-37"><span class="linenos" data-linenos="37 "></span></a><span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-12-38" name="__codelineno-12-38"></a><a href="#__codelineno-12-38"><span class="linenos" data-linenos="38 "></span></a><span class="p">}</span>
+<a id="__codelineno-12-39" name="__codelineno-12-39"></a><a href="#__codelineno-12-39"><span class="linenos" data-linenos="39 "></span></a><span class="n">__android_log_print</span><span class="p">(</span><span class="n">ANDROID_LOG_INFO</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Listening&quot;</span><span class="p">);</span>
+<a id="__codelineno-12-40" name="__codelineno-12-40"></a><a href="#__codelineno-12-40"><span class="linenos" data-linenos="40 "></span></a><span class="c1">// 接受客户端连接请求</span>
+<a id="__codelineno-12-41" name="__codelineno-12-41"></a><a href="#__codelineno-12-41"><span class="linenos" data-linenos="41 "></span></a><span class="k">struct</span><span class="w"> </span><span class="nc">sockaddr_in</span><span class="w"> </span><span class="n">clnt_addr</span><span class="p">;</span>
+<a id="__codelineno-12-42" name="__codelineno-12-42"></a><a href="#__codelineno-12-42"><span class="linenos" data-linenos="42 "></span></a><span class="kt">socklen_t</span><span class="w"> </span><span class="n">clnt_addr_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">clnt_addr</span><span class="p">);</span>
+<a id="__codelineno-12-43" name="__codelineno-12-43"></a><a href="#__codelineno-12-43"><span class="linenos" data-linenos="43 "></span></a><span class="kt">int</span><span class="w"> </span><span class="n">clnt_sock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">accept</span><span class="p">(</span><span class="n">serv_sock</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">sockaddr</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">clnt_addr</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">clnt_addr_size</span><span class="p">);</span>
+<a id="__codelineno-12-44" name="__codelineno-12-44"></a><a href="#__codelineno-12-44"><span class="linenos" data-linenos="44 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">clnt_sock</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-45" name="__codelineno-12-45"></a><a href="#__codelineno-12-45"><span class="linenos" data-linenos="45 "></span></a><span class="w">    </span><span class="n">__android_log_print</span><span class="p">(</span><span class="n">ANDROID_LOG_ERROR</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Accept failed: %s&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="p">));</span>
+<a id="__codelineno-12-46" name="__codelineno-12-46"></a><a href="#__codelineno-12-46"><span class="linenos" data-linenos="46 "></span></a><span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-12-47" name="__codelineno-12-47"></a><a href="#__codelineno-12-47"><span class="linenos" data-linenos="47 "></span></a><span class="p">}</span>
+<a id="__codelineno-12-48" name="__codelineno-12-48"></a><a href="#__codelineno-12-48"><span class="linenos" data-linenos="48 "></span></a><span class="n">__android_log_print</span><span class="p">(</span><span class="n">ANDROID_LOG_INFO</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Client connected&quot;</span><span class="p">);</span>
+<a id="__codelineno-12-49" name="__codelineno-12-49"></a><a href="#__codelineno-12-49"><span class="linenos" data-linenos="49 "></span></a><span class="c1">// 接收文件名</span>
+<a id="__codelineno-12-50" name="__codelineno-12-50"></a><a href="#__codelineno-12-50"><span class="linenos" data-linenos="50 "></span></a><span class="kt">char</span><span class="w"> </span><span class="n">fileNameBuffer</span><span class="p">[</span><span class="mi">260</span><span class="p">];</span>
+<a id="__codelineno-12-51" name="__codelineno-12-51"></a><a href="#__codelineno-12-51"><span class="linenos" data-linenos="51 "></span></a><span class="kt">int</span><span class="w"> </span><span class="n">fileNameLength</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">recv</span><span class="p">(</span><span class="n">clnt_sock</span><span class="p">,</span><span class="w"> </span><span class="n">fileNameBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">260</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<a id="__codelineno-12-52" name="__codelineno-12-52"></a><a href="#__codelineno-12-52"><span class="linenos" data-linenos="52 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">fileNameLength</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-53" name="__codelineno-12-53"></a><a href="#__codelineno-12-53"><span class="linenos" data-linenos="53 "></span></a><span class="w">    </span><span class="n">__android_log_print</span><span class="p">(</span><span class="n">ANDROID_LOG_ERROR</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Failed to receive file name: %s&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-54" name="__codelineno-12-54"></a><a href="#__codelineno-12-54"><span class="linenos" data-linenos="54 "></span></a><span class="w">                        </span><span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="p">));</span>
+<a id="__codelineno-12-55" name="__codelineno-12-55"></a><a href="#__codelineno-12-55"><span class="linenos" data-linenos="55 "></span></a><span class="w">    </span><span class="n">close</span><span class="p">(</span><span class="n">clnt_sock</span><span class="p">);</span>
+<a id="__codelineno-12-56" name="__codelineno-12-56"></a><a href="#__codelineno-12-56"><span class="linenos" data-linenos="56 "></span></a><span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-12-57" name="__codelineno-12-57"></a><a href="#__codelineno-12-57"><span class="linenos" data-linenos="57 "></span></a><span class="p">}</span>
+<a id="__codelineno-12-58" name="__codelineno-12-58"></a><a href="#__codelineno-12-58"><span class="linenos" data-linenos="58 "></span></a><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">receivedFileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fileNameBuffer</span><span class="p">;</span>
+<a id="__codelineno-12-59" name="__codelineno-12-59"></a><a href="#__codelineno-12-59"><span class="linenos" data-linenos="59 "></span></a><span class="n">__android_log_print</span><span class="p">(</span><span class="n">ANDROID_LOG_INFO</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Received file name&quot;</span><span class="p">);</span>
+<a id="__codelineno-12-60" name="__codelineno-12-60"></a><a href="#__codelineno-12-60"><span class="linenos" data-linenos="60 "></span></a><span class="c1">// 构造文件的完整路径</span>
+<a id="__codelineno-12-61" name="__codelineno-12-61"></a><a href="#__codelineno-12-61"><span class="linenos" data-linenos="61 "></span></a><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">internalPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/data/data/com.harry.apk/&quot;</span><span class="p">;</span>
+<a id="__codelineno-12-62" name="__codelineno-12-62"></a><a href="#__codelineno-12-62"><span class="linenos" data-linenos="62 "></span></a><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">fullPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">internalPath</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">receivedFileName</span><span class="p">;</span>
+<a id="__codelineno-12-63" name="__codelineno-12-63"></a><a href="#__codelineno-12-63"><span class="linenos" data-linenos="63 "></span></a><span class="n">std</span><span class="o">::</span><span class="n">ofstream</span><span class="w"> </span><span class="nf">outfile</span><span class="p">(</span><span class="n">fullPath</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">ofstream</span><span class="o">::</span><span class="n">binary</span><span class="p">);</span>
+<a id="__codelineno-12-64" name="__codelineno-12-64"></a><a href="#__codelineno-12-64"><span class="linenos" data-linenos="64 "></span></a><span class="c1">// 检查文件是否成功打开</span>
+<a id="__codelineno-12-65" name="__codelineno-12-65"></a><a href="#__codelineno-12-65"><span class="linenos" data-linenos="65 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">outfile</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-66" name="__codelineno-12-66"></a><a href="#__codelineno-12-66"><span class="linenos" data-linenos="66 "></span></a><span class="w">    </span><span class="n">__android_log_print</span><span class="p">(</span><span class="n">ANDROID_LOG_ERROR</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Cannot open file: %s&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-67" name="__codelineno-12-67"></a><a href="#__codelineno-12-67"><span class="linenos" data-linenos="67 "></span></a><span class="w">                        </span><span class="n">fullPath</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<a id="__codelineno-12-68" name="__codelineno-12-68"></a><a href="#__codelineno-12-68"><span class="linenos" data-linenos="68 "></span></a><span class="w">    </span><span class="n">close</span><span class="p">(</span><span class="n">clnt_sock</span><span class="p">);</span>
+<a id="__codelineno-12-69" name="__codelineno-12-69"></a><a href="#__codelineno-12-69"><span class="linenos" data-linenos="69 "></span></a><span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-12-70" name="__codelineno-12-70"></a><a href="#__codelineno-12-70"><span class="linenos" data-linenos="70 "></span></a><span class="p">}</span>
+<a id="__codelineno-12-71" name="__codelineno-12-71"></a><a href="#__codelineno-12-71"><span class="linenos" data-linenos="71 "></span></a><span class="c1">// 读取数据并写入文件</span>
+<a id="__codelineno-12-72" name="__codelineno-12-72"></a><a href="#__codelineno-12-72"><span class="linenos" data-linenos="72 "></span></a><span class="kt">int</span><span class="w"> </span><span class="n">valread</span><span class="p">;</span>
+<a id="__codelineno-12-73" name="__codelineno-12-73"></a><a href="#__codelineno-12-73"><span class="linenos" data-linenos="73 "></span></a><span class="kt">char</span><span class="w"> </span><span class="n">buffer</span><span class="p">[</span><span class="mi">1024</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<a id="__codelineno-12-74" name="__codelineno-12-74"></a><a href="#__codelineno-12-74"><span class="linenos" data-linenos="74 "></span></a><span class="k">while</span><span class="w"> </span><span class="p">((</span><span class="n">valread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">recv</span><span class="p">(</span><span class="n">clnt_sock</span><span class="p">,</span><span class="w"> </span><span class="n">buffer</span><span class="p">,</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-75" name="__codelineno-12-75"></a><a href="#__codelineno-12-75"><span class="linenos" data-linenos="75 "></span></a><span class="w">    </span><span class="n">outfile</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span><span class="w"> </span><span class="n">valread</span><span class="p">);</span>
+<a id="__codelineno-12-76" name="__codelineno-12-76"></a><a href="#__codelineno-12-76"><span class="linenos" data-linenos="76 "></span></a><span class="p">}</span>
+<a id="__codelineno-12-77" name="__codelineno-12-77"></a><a href="#__codelineno-12-77"><span class="linenos" data-linenos="77 "></span></a><span class="c1">// 检查数据接收是否有错误</span>
+<a id="__codelineno-12-78" name="__codelineno-12-78"></a><a href="#__codelineno-12-78"><span class="linenos" data-linenos="78 "></span></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">valread</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-79" name="__codelineno-12-79"></a><a href="#__codelineno-12-79"><span class="linenos" data-linenos="79 "></span></a><span class="w">    </span><span class="n">__android_log_print</span><span class="p">(</span><span class="n">ANDROID_LOG_ERROR</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Error receiving data: %s&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-80" name="__codelineno-12-80"></a><a href="#__codelineno-12-80"><span class="linenos" data-linenos="80 "></span></a><span class="w">                        </span><span class="n">strerror</span><span class="p">(</span><span class="n">errno</span><span class="p">));</span>
+<a id="__codelineno-12-81" name="__codelineno-12-81"></a><a href="#__codelineno-12-81"><span class="linenos" data-linenos="81 "></span></a><span class="w">    </span><span class="n">outfile</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
+<a id="__codelineno-12-82" name="__codelineno-12-82"></a><a href="#__codelineno-12-82"><span class="linenos" data-linenos="82 "></span></a><span class="w">    </span><span class="n">close</span><span class="p">(</span><span class="n">clnt_sock</span><span class="p">);</span>
+<a id="__codelineno-12-83" name="__codelineno-12-83"></a><a href="#__codelineno-12-83"><span class="linenos" data-linenos="83 "></span></a><span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-12-84" name="__codelineno-12-84"></a><a href="#__codelineno-12-84"><span class="linenos" data-linenos="84 "></span></a><span class="p">}</span>
+<a id="__codelineno-12-85" name="__codelineno-12-85"></a><a href="#__codelineno-12-85"><span class="linenos" data-linenos="85 "></span></a><span class="n">__android_log_print</span><span class="p">(</span><span class="n">ANDROID_LOG_INFO</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;File transfer completed&quot;</span><span class="p">);</span>
+<a id="__codelineno-12-86" name="__codelineno-12-86"></a><a href="#__codelineno-12-86"><span class="linenos" data-linenos="86 "></span></a><span class="c1">// 关闭文件</span>
+<a id="__codelineno-12-87" name="__codelineno-12-87"></a><a href="#__codelineno-12-87"><span class="linenos" data-linenos="87 "></span></a><span class="n">outfile</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
+<a id="__codelineno-12-88" name="__codelineno-12-88"></a><a href="#__codelineno-12-88"><span class="linenos" data-linenos="88 "></span></a><span class="n">__android_log_print</span><span class="p">(</span><span class="n">ANDROID_LOG_INFO</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;File closed&quot;</span><span class="p">);</span>
+<a id="__codelineno-12-89" name="__codelineno-12-89"></a><a href="#__codelineno-12-89"><span class="linenos" data-linenos="89 "></span></a><span class="c1">// 发送接收确认消息</span>
+<a id="__codelineno-12-90" name="__codelineno-12-90"></a><a href="#__codelineno-12-90"><span class="linenos" data-linenos="90 "></span></a><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">RECEIPT_CONFIRMATION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;RECEIPT_CONFIRMED&quot;</span><span class="p">;</span>
+<a id="__codelineno-12-91" name="__codelineno-12-91"></a><a href="#__codelineno-12-91"><span class="linenos" data-linenos="91 "></span></a><span class="n">send</span><span class="p">(</span><span class="n">clnt_sock</span><span class="p">,</span><span class="w"> </span><span class="n">RECEIPT_CONFIRMATION</span><span class="p">,</span><span class="w"> </span><span class="n">strlen</span><span class="p">(</span><span class="n">RECEIPT_CONFIRMATION</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<a id="__codelineno-12-92" name="__codelineno-12-92"></a><a href="#__codelineno-12-92"><span class="linenos" data-linenos="92 "></span></a><span class="c1">// 关闭客户端套接字</span>
+<a id="__codelineno-12-93" name="__codelineno-12-93"></a><a href="#__codelineno-12-93"><span class="linenos" data-linenos="93 "></span></a><span class="n">close</span><span class="p">(</span><span class="n">clnt_sock</span><span class="p">);</span>
+<a id="__codelineno-12-94" name="__codelineno-12-94"></a><a href="#__codelineno-12-94"><span class="linenos" data-linenos="94 "></span></a><span class="n">__android_log_print</span><span class="p">(</span><span class="n">ANDROID_LOG_INFO</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Client socket closed&quot;</span><span class="p">);</span>
+<a id="__codelineno-12-95" name="__codelineno-12-95"></a><a href="#__codelineno-12-95"><span class="linenos" data-linenos="95 "></span></a><span class="c1">// 关闭套接字</span>
+<a id="__codelineno-12-96" name="__codelineno-12-96"></a><a href="#__codelineno-12-96"><span class="linenos" data-linenos="96 "></span></a><span class="n">close</span><span class="p">(</span><span class="n">serv_sock</span><span class="p">);</span>
+<a id="__codelineno-12-97" name="__codelineno-12-97"></a><a href="#__codelineno-12-97"><span class="linenos" data-linenos="97 "></span></a><span class="n">__android_log_print</span><span class="p">(</span><span class="n">ANDROID_LOG_INFO</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Socket closed&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p>Main函数（Android端）：</p>
+<p>需要注意的是，在Android平台，我们需要通过JNI接口实现，而且需要多线程：</p>
+<div class="language-C++ highlight"><span class="filename">C++</span><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1"></a><a href="#__codelineno-13-1"><span class="linenos" data-linenos=" 1 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;jni.h&gt;</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2"></a><a href="#__codelineno-13-2"><span class="linenos" data-linenos=" 2 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string&gt;</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3"></a><a href="#__codelineno-13-3"><span class="linenos" data-linenos=" 3 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;thread&gt;</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4"></a><a href="#__codelineno-13-4"><span class="linenos" data-linenos=" 4 "></span></a>
+<a id="__codelineno-13-5" name="__codelineno-13-5"></a><a href="#__codelineno-13-5"><span class="linenos" data-linenos=" 5 "></span></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;DemoSocket.h&quot;</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6"></a><a href="#__codelineno-13-6"><span class="linenos" data-linenos=" 6 "></span></a>
+<a id="__codelineno-13-7" name="__codelineno-13-7"></a><a href="#__codelineno-13-7"><span class="linenos" data-linenos=" 7 "></span></a><span class="kt">void</span><span class="w"> </span><span class="nf">startSocketOperation</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8"></a><a href="#__codelineno-13-8"><span class="linenos" data-linenos=" 8 "></span></a><span class="w">    </span><span class="n">DemoSocket</span><span class="w"> </span><span class="n">receiveFileSocket</span><span class="p">;</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9"></a><a href="#__codelineno-13-9"><span class="linenos" data-linenos=" 9 "></span></a><span class="w">    </span><span class="n">receiveFileSocket</span><span class="p">.</span><span class="n">ReceiveSocket</span><span class="p">();</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10"></a><a href="#__codelineno-13-10"><span class="linenos" data-linenos="10 "></span></a><span class="p">}</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11"></a><a href="#__codelineno-13-11"><span class="linenos" data-linenos="11 "></span></a>
+<a id="__codelineno-13-12" name="__codelineno-13-12"></a><a href="#__codelineno-13-12"><span class="linenos" data-linenos="12 "></span></a><span class="k">extern</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="n">JNIEXPORT</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">JNICALL</span>
+<a id="__codelineno-13-13" name="__codelineno-13-13"></a><a href="#__codelineno-13-13"><span class="linenos" data-linenos="13 "></span></a><span class="n">Java_com_harry_apk_MainActivity_socketButtonFromJNI</span><span class="p">(</span>
+<a id="__codelineno-13-14" name="__codelineno-13-14"></a><a href="#__codelineno-13-14"><span class="linenos" data-linenos="14 "></span></a><span class="w">        </span><span class="n">JNIEnv</span><span class="o">*</span><span class="w"> </span><span class="n">env</span><span class="p">,</span>
+<a id="__codelineno-13-15" name="__codelineno-13-15"></a><a href="#__codelineno-13-15"><span class="linenos" data-linenos="15 "></span></a><span class="w">        </span><span class="n">jobject</span><span class="w"> </span><span class="cm">/* this */</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-13-16" name="__codelineno-13-16"></a><a href="#__codelineno-13-16"><span class="linenos" data-linenos="16 "></span></a><span class="w">    </span><span class="n">__android_log_print</span><span class="p">(</span><span class="n">ANDROID_LOG_INFO</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;DemoSocket init...&quot;</span><span class="p">);</span>
+<a id="__codelineno-13-17" name="__codelineno-13-17"></a><a href="#__codelineno-13-17"><span class="linenos" data-linenos="17 "></span></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="w"> </span><span class="nf">socketThread</span><span class="p">(</span><span class="n">startSocketOperation</span><span class="p">);</span>
+<a id="__codelineno-13-18" name="__codelineno-13-18"></a><a href="#__codelineno-13-18"><span class="linenos" data-linenos="18 "></span></a><span class="w">    </span><span class="n">socketThread</span><span class="p">.</span><span class="n">detach</span><span class="p">();</span><span class="w"> </span><span class="c1">// 使线程独立执行</span>
+<a id="__codelineno-13-19" name="__codelineno-13-19"></a><a href="#__codelineno-13-19"><span class="linenos" data-linenos="19 "></span></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="socket_2">多Socket连接方案<a class="headerlink" href="#socket_2" title="Permanent link">&para;</a></h3>
+<p>上述代码有两个很明显的问题：</p>
+<p>1、单Socket连接：很明显，在服务端接收到文件回送确认消息后，服务端就关闭了，这种实现过程过于简单了，无法满足日常需要。我们可以通过添加一个while循环解决单次传输的问题（见下面代码的mode 1）。</p>
+<p>2、阻塞：如果有多个socket连接同时过来会发生什么呢？是的，会发生排队现象——只有一个Socket结束了，另一个Socket才会继续。这会导致硬件资源的浪费。</p>
+<h4 id="_8">多线程<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
+<p>我们可以通过多线程解决这个问题：</p>
+<div class="language-C++ highlight"><span class="filename">C++</span><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1"></a><a href="#__codelineno-14-1"><span class="linenos" data-linenos=" 1 "></span></a><span class="c1">// .h头文件，将accept与业务功能抽象出来做封装，这里省略实现了，上面的代码改改就可以</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2"></a><a href="#__codelineno-14-2"><span class="linenos" data-linenos=" 2 "></span></a><span class="cm">/**</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3"></a><a href="#__codelineno-14-3"><span class="linenos" data-linenos=" 3 "></span></a><span class="cm"> * 创建ClntSocket</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4"></a><a href="#__codelineno-14-4"><span class="linenos" data-linenos=" 4 "></span></a><span class="cm"> * @return SOCKET: 返回创建的Socket</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5"></a><a href="#__codelineno-14-5"><span class="linenos" data-linenos=" 5 "></span></a><span class="cm"> */</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6"></a><a href="#__codelineno-14-6"><span class="linenos" data-linenos=" 6 "></span></a><span class="n">SOCKET</span><span class="w"> </span><span class="nf">createClntSocket</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7"></a><a href="#__codelineno-14-7"><span class="linenos" data-linenos=" 7 "></span></a>
+<a id="__codelineno-14-8" name="__codelineno-14-8"></a><a href="#__codelineno-14-8"><span class="linenos" data-linenos=" 8 "></span></a><span class="cm">/**</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9"></a><a href="#__codelineno-14-9"><span class="linenos" data-linenos=" 9 "></span></a><span class="cm">* Socket业务功能：接收文件</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10"></a><a href="#__codelineno-14-10"><span class="linenos" data-linenos="10 "></span></a><span class="cm">* @param receive_socket 接收文件的Socket</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11"></a><a href="#__codelineno-14-11"><span class="linenos" data-linenos="11 "></span></a><span class="cm">*/</span>
+<a id="__codelineno-14-12" name="__codelineno-14-12"></a><a href="#__codelineno-14-12"><span class="linenos" data-linenos="12 "></span></a><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">ReceiveFile</span><span class="p">(</span><span class="n">SOCKET</span><span class="w"> </span><span class="n">receive_socket</span><span class="p">);</span>
+<a id="__codelineno-14-13" name="__codelineno-14-13"></a><a href="#__codelineno-14-13"><span class="linenos" data-linenos="13 "></span></a>
+<a id="__codelineno-14-14" name="__codelineno-14-14"></a><a href="#__codelineno-14-14"><span class="linenos" data-linenos="14 "></span></a><span class="c1">// .cpp文件， socket功能的视线，这里在类初始化时已经完成了socket的创建，下一步是accept或者connect</span>
+<a id="__codelineno-14-15" name="__codelineno-14-15"></a><a href="#__codelineno-14-15"><span class="linenos" data-linenos="15 "></span></a><span class="kt">void</span><span class="w"> </span><span class="nf">AnkiSocket::startSocket</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">command</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-14-16" name="__codelineno-14-16"></a><a href="#__codelineno-14-16"><span class="linenos" data-linenos="16 "></span></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">command</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;server&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-14-17" name="__codelineno-14-17"></a><a href="#__codelineno-14-17"><span class="linenos" data-linenos="17 "></span></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Please select socket link mode: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<a id="__codelineno-14-18" name="__codelineno-14-18"></a><a href="#__codelineno-14-18"><span class="linenos" data-linenos="18 "></span></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;1. Single-threaded Mode&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<a id="__codelineno-14-19" name="__codelineno-14-19"></a><a href="#__codelineno-14-19"><span class="linenos" data-linenos="19 "></span></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;2. Multi-threaded Mode &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<a id="__codelineno-14-20" name="__codelineno-14-20"></a><a href="#__codelineno-14-20"><span class="linenos" data-linenos="20 "></span></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">mode</span><span class="p">;</span>
+<a id="__codelineno-14-21" name="__codelineno-14-21"></a><a href="#__codelineno-14-21"><span class="linenos" data-linenos="21 "></span></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">mode</span><span class="p">;</span>
+<a id="__codelineno-14-22" name="__codelineno-14-22"></a><a href="#__codelineno-14-22"><span class="linenos" data-linenos="22 "></span></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">mode</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">mode</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-14-23" name="__codelineno-14-23"></a><a href="#__codelineno-14-23"><span class="linenos" data-linenos="23 "></span></a><span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Unrecognized Mode&quot;</span><span class="p">;</span>
+<a id="__codelineno-14-24" name="__codelineno-14-24"></a><a href="#__codelineno-14-24"><span class="linenos" data-linenos="24 "></span></a><span class="w">            </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-14-25" name="__codelineno-14-25"></a><a href="#__codelineno-14-25"><span class="linenos" data-linenos="25 "></span></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-14-26" name="__codelineno-14-26"></a><a href="#__codelineno-14-26"><span class="linenos" data-linenos="26 "></span></a><span class="w">        </span><span class="n">serverSocket</span><span class="p">();</span>
+<a id="__codelineno-14-27" name="__codelineno-14-27"></a><a href="#__codelineno-14-27"><span class="linenos" data-linenos="27 "></span></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">mode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-14-28" name="__codelineno-14-28"></a><a href="#__codelineno-14-28"><span class="linenos" data-linenos="28 "></span></a><span class="w">            </span><span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">){</span>
+<a id="__codelineno-14-29" name="__codelineno-14-29"></a><a href="#__codelineno-14-29"><span class="linenos" data-linenos="29 "></span></a><span class="w">                </span><span class="n">SOCKET</span><span class="w"> </span><span class="n">SingleSocket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">createClntSocket</span><span class="p">();</span>
+<a id="__codelineno-14-30" name="__codelineno-14-30"></a><a href="#__codelineno-14-30"><span class="linenos" data-linenos="30 "></span></a><span class="w">                </span><span class="c1">//可选择业务</span>
+<a id="__codelineno-14-31" name="__codelineno-14-31"></a><a href="#__codelineno-14-31"><span class="linenos" data-linenos="31 "></span></a><span class="w">                </span><span class="n">ReceiveFile</span><span class="p">(</span><span class="n">SingleSocket</span><span class="p">);</span>
+<a id="__codelineno-14-32" name="__codelineno-14-32"></a><a href="#__codelineno-14-32"><span class="linenos" data-linenos="32 "></span></a><span class="w">            </span><span class="p">}</span>
+<a id="__codelineno-14-33" name="__codelineno-14-33"></a><a href="#__codelineno-14-33"><span class="linenos" data-linenos="33 "></span></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-14-34" name="__codelineno-14-34"></a><a href="#__codelineno-14-34"><span class="linenos" data-linenos="34 "></span></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">mode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-14-35" name="__codelineno-14-35"></a><a href="#__codelineno-14-35"><span class="linenos" data-linenos="35 "></span></a><span class="w">            </span><span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">){</span>
+<a id="__codelineno-14-36" name="__codelineno-14-36"></a><a href="#__codelineno-14-36"><span class="linenos" data-linenos="36 "></span></a><span class="w">                </span><span class="c1">// 启用多线程，实现多个Socket建立</span>
+<a id="__codelineno-14-37" name="__codelineno-14-37"></a><a href="#__codelineno-14-37"><span class="linenos" data-linenos="37 "></span></a><span class="w">                </span><span class="n">SOCKET</span><span class="w"> </span><span class="n">newClntSocket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">createClntSocket</span><span class="p">();</span>
+<a id="__codelineno-14-38" name="__codelineno-14-38"></a><a href="#__codelineno-14-38"><span class="linenos" data-linenos="38 "></span></a><span class="w">                </span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="w"> </span><span class="n">newClntSocketThread</span><span class="p">(</span><span class="n">ReceiveFile</span><span class="p">,</span><span class="w"> </span><span class="n">newClntSocket</span><span class="p">);</span>
+<a id="__codelineno-14-39" name="__codelineno-14-39"></a><a href="#__codelineno-14-39"><span class="linenos" data-linenos="39 "></span></a><span class="w">                </span><span class="n">newClntSocketThread</span><span class="p">.</span><span class="n">detach</span><span class="p">();</span>
+<a id="__codelineno-14-40" name="__codelineno-14-40"></a><a href="#__codelineno-14-40"><span class="linenos" data-linenos="40 "></span></a><span class="w">            </span><span class="p">}</span>
+<a id="__codelineno-14-41" name="__codelineno-14-41"></a><a href="#__codelineno-14-41"><span class="linenos" data-linenos="41 "></span></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-14-42" name="__codelineno-14-42"></a><a href="#__codelineno-14-42"><span class="linenos" data-linenos="42 "></span></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-14-43" name="__codelineno-14-43"></a><a href="#__codelineno-14-43"><span class="linenos" data-linenos="43 "></span></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Please select your file. &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<a id="__codelineno-14-44" name="__codelineno-14-44"></a><a href="#__codelineno-14-44"><span class="linenos" data-linenos="44 "></span></a><span class="w">        </span><span class="n">clientSocket</span><span class="p">();</span>
+<a id="__codelineno-14-45" name="__codelineno-14-45"></a><a href="#__codelineno-14-45"><span class="linenos" data-linenos="45 "></span></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-14-46" name="__codelineno-14-46"></a><a href="#__codelineno-14-46"><span class="linenos" data-linenos="46 "></span></a><span class="p">}</span>
+</code></pre></div>
+<p>多线程编程在多种应用场景中都是优秀的解决方案，比如GUI程序、实时系统、并发任务处理等，网络编程（Socket）也是其中之一。</p>
+<p>但是Socket的多线程也有无法忽视的问题：</p>
+<p>然而，Socket编程中的多线程处理同样面临着一些不容忽视的挑战：</p>
+<ol>
+<li><strong>资源浪费</strong>：每个线程都会消耗系统资源，特别是在处理大量并发连接时，线程数量的增加可能导致资源的过度消耗。</li>
+<li><strong>性能损耗</strong>：线程间的上下文切换可能导致性能损耗，尤其是在高负载情况下。</li>
+<li><strong>数量限制</strong>：操作系统通常对可创建的线程数量有限制，这可能影响到程序的扩展性和稳定性。</li>
+</ol>
+<p>这些问题会随着Socket数量的增多而变得更加明显，比如，一个服务器连接数百万用户，这种性能损耗该有多大呢？</p>
+<p>当然，我们也可以采用如连接池、锁、线程安全机制等多线程处理技术来应对这些问题。但无法避免的，这些手段会让代码变的更庞大、复杂。</p>
+<p>那么有没有一种方案，他既可以单线程，又可以管理多个Socket连接呢？</p>
+<p>I/O多路复用技术来了~</p>
+<h4 id="io">I/O多路复用<a class="headerlink" href="#io" title="Permanent link">&para;</a></h4>
+<p>I/O多路复用，是用户态与内核态相互配合，从而实现对Socket连接的管理。</p>
+<p>首先，要明确一下：<strong>I/O多路复用是异步方案，不是并行方案；I/O多路复用是单线程的，它无法替代多线程。</strong></p>
+<p>异步和并行的区别：</p>
+<p>假设我们有两个工作线A、B，异步的概念是：</p>
+<p>当任务A遇到一个需要等待的操作时，为了避免硬件资源浪费，将控制权返回，去调用任务B。而任务B卡主时，再返回任务A。异步的执行是线性的。</p>
+<p>并行则很好理解，是A、B两个线路同时操作。
+<img alt="image-20240228153938312" src=".\image\异步与并行socket.png" /></p>
+<p>如图是异步与并行Socket的区别：</p>
+<ul>
+<li>异步仍是单线程，在遇到如Listen、recv、send等可能会阻塞的操作时，会切换到另一个Socket任务继续执行；并行在本任务按顺序执行。</li>
+<li>异步是上层应用与内核态应用共同协作实现的操作；并行是操作系统在CPU上启动一个线程执行。</li>
+<li>异步原子操作无法分割，如send执行时，无法中断去执行另一个任务；并行各执行各的，互不打扰。</li>
+</ul>
+<h5 id="select">Select<a class="headerlink" href="#select" title="Permanent link">&para;</a></h5>
+<p><strong>普通Socket的原理</strong></p>
+<p>Socket的recv一般原理是这样的：</p>
+<ol>
+<li><strong>创建Socket并获取文件描述符</strong>：</li>
+<li>在用户态创建Socket时，由操作系统分配一个文件描述符（FD）来代表这个Socket。</li>
+<li><strong>建立连接（针对TCP）</strong>：</li>
+<li>客户端使用 <code>connect</code> 调用与服务器建立连接，而服务器端使用 <code>accept</code> 接受客户端的连接。</li>
+<li><strong>调用 <code>recv</code> 等待数据</strong>：</li>
+<li>请求操作系统从Socket的文件描述符对应的缓冲区中读取数据。</li>
+<li><code>recv</code> 会在没有可用数据时阻塞当前线程，直到有数据到达。这一过程是在内核态进行的，操作系统负责监控网络接口上的数据，并将接收到的数据存储到与该Socket关联的缓冲区中。</li>
+<li><strong>数据从内核态传输到用户态</strong>：</li>
+<li>一旦有数据可用，操作系统会将数据从内核态的缓冲区复制到用户态应用程序指定的缓冲区中<strong>（只有一次拷贝）</strong>。</li>
+<li><strong>处理接收到的数据</strong>：</li>
+<li><code>recv</code> 调用返回，开始处理这些数据。</li>
+<li><strong>关闭Socket</strong>：</li>
+<li>数据交换完成后，使用 <code>close</code> （在Unix、Linux系统）或 <code>closesocket</code> （在Windows系统）关闭Socket。</li>
+</ol>
+<p><strong>Select原理</strong></p>
+<p>从原理可以看出，普通Socket是一条单行道，一个Socket完成，然后才可以进行下一个。而select将单个处理改为了批处理：</p>
+<ol>
+<li><strong>准备文件描述符集合</strong>：将所有要监控的Socket文件描述符加入到一个集合中。</li>
+<li><strong>拷贝集合到内核</strong>：将这个集合拷贝到内核空间，让操作系统知道需要监控哪些Socket<strong>（一次拷贝）</strong>。</li>
+<li><strong>监控描述符集合</strong>：内核遍历这个集合，标记那些有事件（如可读、可写或错误）发生的Socket。</li>
+<li><strong>结果拷贝回用户态</strong>：内核将有事件发生的Socket标记集合拷贝回用户空间<strong>（二次拷贝）</strong>。</li>
+<li><strong>处理有事件的Socket</strong>：应用程序遍历这个标记集合，对有事件发生的Socket执行相应操作。</li>
+</ol>
+<p>由于不再局限于一次只处理一个Socket，那么Select也可以设置返回条件，来进行下一批处理。</p>
+<ol>
+<li><strong>超时时间</strong>：当调用 <code>select</code> 函数时可以指定一个超时值。</li>
+<li><strong>处理就绪Socket的时间</strong>：</li>
+<li>当 <code>select</code> 返回后，你需要检查哪些Socket就绪，并对这些Socket进行处理（如读取、写入或接受连接）。处理这些Socket所花费的时间也会影响到整个循环的间隔。</li>
+<li>这个处理时间取决于你的应用程序逻辑和Socket的数量。</li>
+</ol>
+<p>我们补充上Select的代码：</p>
+<div class="language-C++ highlight"><span class="filename">C++</span><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1"></a><a href="#__codelineno-15-1"><span class="linenos" data-linenos=" 1 "></span></a><span class="kt">void</span><span class="w"> </span><span class="nf">AnkiSocket::startSocket</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">command</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2"></a><a href="#__codelineno-15-2"><span class="linenos" data-linenos=" 2 "></span></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">command</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;server&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3"></a><a href="#__codelineno-15-3"><span class="linenos" data-linenos=" 3 "></span></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Please select socket link mode: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4"></a><a href="#__codelineno-15-4"><span class="linenos" data-linenos=" 4 "></span></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;1. Single-threaded Mode&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5"></a><a href="#__codelineno-15-5"><span class="linenos" data-linenos=" 5 "></span></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;2. Multi-threaded Mode &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6"></a><a href="#__codelineno-15-6"><span class="linenos" data-linenos=" 6 "></span></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;3. Select Mode &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7"></a><a href="#__codelineno-15-7"><span class="linenos" data-linenos=" 7 "></span></a><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">mode</span><span class="p">;</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8"></a><a href="#__codelineno-15-8"><span class="linenos" data-linenos=" 8 "></span></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">mode</span><span class="p">;</span>
+<a id="__codelineno-15-9" name="__codelineno-15-9"></a><a href="#__codelineno-15-9"><span class="linenos" data-linenos=" 9 "></span></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">mode</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">mode</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">mode</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-10" name="__codelineno-15-10"></a><a href="#__codelineno-15-10"><span class="linenos" data-linenos="10 "></span></a><span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Unrecognized Mode&quot;</span><span class="p">;</span>
+<a id="__codelineno-15-11" name="__codelineno-15-11"></a><a href="#__codelineno-15-11"><span class="linenos" data-linenos="11 "></span></a><span class="w">            </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-15-12" name="__codelineno-15-12"></a><a href="#__codelineno-15-12"><span class="linenos" data-linenos="12 "></span></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-15-13" name="__codelineno-15-13"></a><a href="#__codelineno-15-13"><span class="linenos" data-linenos="13 "></span></a><span class="w">        </span><span class="n">serverSocket</span><span class="p">();</span>
+<a id="__codelineno-15-14" name="__codelineno-15-14"></a><a href="#__codelineno-15-14"><span class="linenos" data-linenos="14 "></span></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">mode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-15" name="__codelineno-15-15"></a><a href="#__codelineno-15-15"><span class="linenos" data-linenos="15 "></span></a><span class="w">            </span><span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">){</span>
+<a id="__codelineno-15-16" name="__codelineno-15-16"></a><a href="#__codelineno-15-16"><span class="linenos" data-linenos="16 "></span></a><span class="w">                </span><span class="n">SOCKET</span><span class="w"> </span><span class="n">SingleSocket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">createClntSocket</span><span class="p">();</span>
+<a id="__codelineno-15-17" name="__codelineno-15-17"></a><a href="#__codelineno-15-17"><span class="linenos" data-linenos="17 "></span></a><span class="w">                </span><span class="c1">//可选择业务</span>
+<a id="__codelineno-15-18" name="__codelineno-15-18"></a><a href="#__codelineno-15-18"><span class="linenos" data-linenos="18 "></span></a><span class="w">                </span><span class="n">ReceiveFile</span><span class="p">(</span><span class="n">SingleSocket</span><span class="p">);</span>
+<a id="__codelineno-15-19" name="__codelineno-15-19"></a><a href="#__codelineno-15-19"><span class="linenos" data-linenos="19 "></span></a><span class="w">            </span><span class="p">}</span>
+<a id="__codelineno-15-20" name="__codelineno-15-20"></a><a href="#__codelineno-15-20"><span class="linenos" data-linenos="20 "></span></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-15-21" name="__codelineno-15-21"></a><a href="#__codelineno-15-21"><span class="linenos" data-linenos="21 "></span></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">mode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-22" name="__codelineno-15-22"></a><a href="#__codelineno-15-22"><span class="linenos" data-linenos="22 "></span></a><span class="w">            </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-23" name="__codelineno-15-23"></a><a href="#__codelineno-15-23"><span class="linenos" data-linenos="23 "></span></a><span class="w">                </span><span class="n">SOCKET</span><span class="w"> </span><span class="n">newClntSocket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">createClntSocket</span><span class="p">();</span>
+<a id="__codelineno-15-24" name="__codelineno-15-24"></a><a href="#__codelineno-15-24"><span class="linenos" data-linenos="24 "></span></a><span class="w">                </span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="w"> </span><span class="n">newClntSocketThread</span><span class="p">(</span><span class="n">ReceiveFile</span><span class="p">,</span><span class="w"> </span><span class="n">newClntSocket</span><span class="p">);</span>
+<a id="__codelineno-15-25" name="__codelineno-15-25"></a><a href="#__codelineno-15-25"><span class="linenos" data-linenos="25 "></span></a><span class="w">                </span><span class="n">newClntSocketThread</span><span class="p">.</span><span class="n">detach</span><span class="p">();</span>
+<a id="__codelineno-15-26" name="__codelineno-15-26"></a><a href="#__codelineno-15-26"><span class="linenos" data-linenos="26 "></span></a><span class="w">            </span><span class="p">}</span>
+<a id="__codelineno-15-27" name="__codelineno-15-27"></a><a href="#__codelineno-15-27"><span class="linenos" data-linenos="27 "></span></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-15-28" name="__codelineno-15-28"></a><a href="#__codelineno-15-28"><span class="linenos" data-linenos="28 "></span></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">mode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-29" name="__codelineno-15-29"></a><a href="#__codelineno-15-29"><span class="linenos" data-linenos="29 "></span></a><span class="w">            </span><span class="c1">// 初始化套接字集合和变量</span>
+<a id="__codelineno-15-30" name="__codelineno-15-30"></a><a href="#__codelineno-15-30"><span class="linenos" data-linenos="30 "></span></a><span class="w">            </span><span class="n">fd_set</span><span class="w"> </span><span class="n">master_set</span><span class="p">;</span>
+<a id="__codelineno-15-31" name="__codelineno-15-31"></a><a href="#__codelineno-15-31"><span class="linenos" data-linenos="31 "></span></a><span class="w">            </span><span class="n">SOCKET</span><span class="w"> </span><span class="n">max_sd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">linkSocket</span><span class="p">,</span><span class="w"> </span><span class="n">newClntSocket</span><span class="p">;</span>
+<a id="__codelineno-15-32" name="__codelineno-15-32"></a><a href="#__codelineno-15-32"><span class="linenos" data-linenos="32 "></span></a><span class="w">            </span><span class="n">FD_ZERO</span><span class="p">(</span><span class="o">&amp;</span><span class="n">master_set</span><span class="p">);</span><span class="w"> </span><span class="c1">// 清空套接字集合</span>
+<a id="__codelineno-15-33" name="__codelineno-15-33"></a><a href="#__codelineno-15-33"><span class="linenos" data-linenos="33 "></span></a><span class="w">            </span><span class="n">FD_SET</span><span class="p">(</span><span class="n">linkSocket</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">master_set</span><span class="p">);</span><span class="w"> </span><span class="c1">// 将linkSocket添加到集合中</span>
+<a id="__codelineno-15-34" name="__codelineno-15-34"></a><a href="#__codelineno-15-34"><span class="linenos" data-linenos="34 "></span></a>
+<a id="__codelineno-15-35" name="__codelineno-15-35"></a><a href="#__codelineno-15-35"><span class="linenos" data-linenos="35 "></span></a><span class="w">            </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-36" name="__codelineno-15-36"></a><a href="#__codelineno-15-36"><span class="linenos" data-linenos="36 "></span></a><span class="w">                </span><span class="n">fd_set</span><span class="w"> </span><span class="n">read_fds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">master_set</span><span class="p">;</span><span class="w"> </span><span class="c1">// 从master_set复制到read_fds，用于select调用</span>
+<a id="__codelineno-15-37" name="__codelineno-15-37"></a><a href="#__codelineno-15-37"><span class="linenos" data-linenos="37 "></span></a>
+<a id="__codelineno-15-38" name="__codelineno-15-38"></a><a href="#__codelineno-15-38"><span class="linenos" data-linenos="38 "></span></a><span class="w">                </span><span class="c1">// 等待套接字活动，无超时设置</span>
+<a id="__codelineno-15-39" name="__codelineno-15-39"></a><a href="#__codelineno-15-39"><span class="linenos" data-linenos="39 "></span></a><span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">activity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">select</span><span class="p">(</span><span class="n">max_sd</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">read_fds</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+<a id="__codelineno-15-40" name="__codelineno-15-40"></a><a href="#__codelineno-15-40"><span class="linenos" data-linenos="40 "></span></a><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">activity</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">errno</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">EINTR</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-41" name="__codelineno-15-41"></a><a href="#__codelineno-15-41"><span class="linenos" data-linenos="41 "></span></a><span class="w">                    </span><span class="n">errorMessage</span><span class="p">(</span><span class="s">&quot;Select error.&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// select调用错误</span>
+<a id="__codelineno-15-42" name="__codelineno-15-42"></a><a href="#__codelineno-15-42"><span class="linenos" data-linenos="42 "></span></a><span class="w">                    </span><span class="k">continue</span><span class="p">;</span>
+<a id="__codelineno-15-43" name="__codelineno-15-43"></a><a href="#__codelineno-15-43"><span class="linenos" data-linenos="43 "></span></a><span class="w">                </span><span class="p">}</span>
+<a id="__codelineno-15-44" name="__codelineno-15-44"></a><a href="#__codelineno-15-44"><span class="linenos" data-linenos="44 "></span></a><span class="w">                </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;select socket ok: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">activity</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<a id="__codelineno-15-45" name="__codelineno-15-45"></a><a href="#__codelineno-15-45"><span class="linenos" data-linenos="45 "></span></a>
+<a id="__codelineno-15-46" name="__codelineno-15-46"></a><a href="#__codelineno-15-46"><span class="linenos" data-linenos="46 "></span></a><span class="w">                </span><span class="c1">// 检查是否有新的连接请求</span>
+<a id="__codelineno-15-47" name="__codelineno-15-47"></a><a href="#__codelineno-15-47"><span class="linenos" data-linenos="47 "></span></a><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">FD_ISSET</span><span class="p">(</span><span class="n">linkSocket</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">read_fds</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-48" name="__codelineno-15-48"></a><a href="#__codelineno-15-48"><span class="linenos" data-linenos="48 "></span></a><span class="w">                    </span><span class="n">newClntSocket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">createClntSocket</span><span class="p">();</span><span class="w"> </span><span class="c1">// 创建新的客户端套接字</span>
+<a id="__codelineno-15-49" name="__codelineno-15-49"></a><a href="#__codelineno-15-49"><span class="linenos" data-linenos="49 "></span></a><span class="w">                    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">newClntSocket</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-50" name="__codelineno-15-50"></a><a href="#__codelineno-15-50"><span class="linenos" data-linenos="50 "></span></a><span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<a id="__codelineno-15-51" name="__codelineno-15-51"></a><a href="#__codelineno-15-51"><span class="linenos" data-linenos="51 "></span></a><span class="w">                    </span><span class="p">}</span>
+<a id="__codelineno-15-52" name="__codelineno-15-52"></a><a href="#__codelineno-15-52"><span class="linenos" data-linenos="52 "></span></a><span class="w">                    </span><span class="n">FD_SET</span><span class="p">(</span><span class="n">newClntSocket</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">master_set</span><span class="p">);</span><span class="w"> </span><span class="c1">// 将新套接字加入集合</span>
+<a id="__codelineno-15-53" name="__codelineno-15-53"></a><a href="#__codelineno-15-53"><span class="linenos" data-linenos="53 "></span></a><span class="w">                    </span><span class="n">max_sd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">max</span><span class="p">(</span><span class="n">newClntSocket</span><span class="p">,</span><span class="w"> </span><span class="n">max_sd</span><span class="p">);</span><span class="w"> </span><span class="c1">// 更新最大套接字描述符</span>
+<a id="__codelineno-15-54" name="__codelineno-15-54"></a><a href="#__codelineno-15-54"><span class="linenos" data-linenos="54 "></span></a><span class="w">                </span><span class="p">}</span>
+<a id="__codelineno-15-55" name="__codelineno-15-55"></a><a href="#__codelineno-15-55"><span class="linenos" data-linenos="55 "></span></a>
+<a id="__codelineno-15-56" name="__codelineno-15-56"></a><a href="#__codelineno-15-56"><span class="linenos" data-linenos="56 "></span></a><span class="w">                </span><span class="c1">// 检查和处理所有套接字的数据接收</span>
+<a id="__codelineno-15-57" name="__codelineno-15-57"></a><a href="#__codelineno-15-57"><span class="linenos" data-linenos="57 "></span></a><span class="w">                </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">max_sd</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-58" name="__codelineno-15-58"></a><a href="#__codelineno-15-58"><span class="linenos" data-linenos="58 "></span></a><span class="w">                    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">linkSocket</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">FD_ISSET</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">read_fds</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-59" name="__codelineno-15-59"></a><a href="#__codelineno-15-59"><span class="linenos" data-linenos="59 "></span></a><span class="w">                        </span><span class="n">ReceiveFile</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w"> </span><span class="c1">// 接收从套接字i传来的数据</span>
+<a id="__codelineno-15-60" name="__codelineno-15-60"></a><a href="#__codelineno-15-60"><span class="linenos" data-linenos="60 "></span></a><span class="w">                        </span><span class="n">FD_CLR</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">master_set</span><span class="p">);</span><span class="w"> </span><span class="c1">// 从集合中移除套接字i</span>
+<a id="__codelineno-15-61" name="__codelineno-15-61"></a><a href="#__codelineno-15-61"><span class="linenos" data-linenos="61 "></span></a><span class="w">                    </span><span class="p">}</span>
+<a id="__codelineno-15-62" name="__codelineno-15-62"></a><a href="#__codelineno-15-62"><span class="linenos" data-linenos="62 "></span></a><span class="w">                </span><span class="p">}</span>
+<a id="__codelineno-15-63" name="__codelineno-15-63"></a><a href="#__codelineno-15-63"><span class="linenos" data-linenos="63 "></span></a><span class="w">            </span><span class="p">}</span>
+<a id="__codelineno-15-64" name="__codelineno-15-64"></a><a href="#__codelineno-15-64"><span class="linenos" data-linenos="64 "></span></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-15-65" name="__codelineno-15-65"></a><a href="#__codelineno-15-65"><span class="linenos" data-linenos="65 "></span></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-66" name="__codelineno-15-66"></a><a href="#__codelineno-15-66"><span class="linenos" data-linenos="66 "></span></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Please select your file. &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<a id="__codelineno-15-67" name="__codelineno-15-67"></a><a href="#__codelineno-15-67"><span class="linenos" data-linenos="67 "></span></a><span class="w">        </span><span class="n">clientSocket</span><span class="p">();</span>
+<a id="__codelineno-15-68" name="__codelineno-15-68"></a><a href="#__codelineno-15-68"><span class="linenos" data-linenos="68 "></span></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-15-69" name="__codelineno-15-69"></a><a href="#__codelineno-15-69"><span class="linenos" data-linenos="69 "></span></a><span class="p">}</span>
+</code></pre></div>
+<p>这段代码相比上一段添加了mode3，用于实现select功能。</p>
+<p>我们使用mode3进行测试：运行发送端<code>./AnkiSocket.exe client</code>，选择文件时暂停一下，客户端会有打印回显。代表连接成功了。此时我们再新运行一个发送端，选择文件时，客户端会有一个新的打印。此时先选择新客户的文件发送，再选择旧的，服务端会先接收新客户端的文件，后接收旧的文件，异步成功！</p>
+<p>和mode1对比，我们同时打开两个客户端，今后都可以connect成功，然后让你选择发送的文件，但是服务端只会等待第一个客户端先发送，第二个一定要等待第一个结束才可以。通过加入打印，可以发现服务端不会出现第二个socket创建成功的提示。</p>
+<h5 id="epoll">epoll<a class="headerlink" href="#epoll" title="Permanent link">&para;</a></h5>
+<p>Todo..</p>
+<h2 id="_9">示例<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h2>
+<p>本文代码均通过个人项目测试：</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="页脚" >
+        
+          
+          <a href="../CMake%28Mingw%E7%A4%BA%E4%BE%8B%29/" class="md-footer__link md-footer__link--prev" aria-label="上一页: CMake(Mingw示例)">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              <div class="md-ellipsis">
+                CMake(Mingw示例)
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../Systrace%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86/" class="md-footer__link md-footer__link--next" aria-label="下一页: Systrace基本原理">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              <div class="md-ellipsis">
+                Systrace基本原理
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; HarrySun
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/HarrySunV9x" target="_blank" rel="noopener" title="GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://www.bilibili.com/" target="_blank" rel="noopener" title="Bilibili" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M488.6 104.1c16.7 18.1 24.4 39.7 23.3 65.7v202.4c-.4 26.4-9.2 48.1-26.5 65.1-17.2 17-39.1 25.9-65.5 26.7H92.02c-26.45-.8-48.21-9.8-65.28-27.2C9.682 419.4.767 396.5 0 368.2V169.8c.767-26 9.682-47.6 26.74-65.7C43.81 87.75 65.57 78.77 92.02 78h29.38L96.05 52.19c-5.75-5.73-8.63-13-8.63-21.79 0-8.8 2.88-16.06 8.63-21.797C101.8 2.868 109.1 0 117.9 0s16.1 2.868 21.9 8.603L213.1 78h88l74.5-69.397C381.7 2.868 389.2 0 398 0c8.8 0 16.1 2.868 21.9 8.603 5.7 5.737 8.6 12.997 8.6 21.797 0 8.79-2.9 16.06-8.6 21.79L394.6 78h29.3c26.4.77 48 9.75 64.7 26.1zm-38.8 69.7c-.4-9.6-3.7-17.4-10.7-23.5-5.2-6.1-14-9.4-22.7-9.8H96.05c-9.59.4-17.45 3.7-23.58 9.8-6.14 6.1-9.4 13.9-9.78 23.5v194.4c0 9.2 3.26 17 9.78 23.5s14.38 9.8 23.58 9.8H416.4c9.2 0 17-3.3 23.3-9.8 6.3-6.5 9.7-14.3 10.1-23.5V173.8zm-264.3 42.7c6.3 6.3 9.7 14.1 10.1 23.2V273c-.4 9.2-3.7 16.9-9.8 23.2-6.2 6.3-14 9.5-23.6 9.5-9.6 0-17.5-3.2-23.6-9.5-6.1-6.3-9.4-14-9.8-23.2v-33.3c.4-9.1 3.8-16.9 10.1-23.2 6.3-6.3 13.2-9.6 23.3-10 9.2.4 17 3.7 23.3 10zm191.5 0c6.3 6.3 9.7 14.1 10.1 23.2V273c-.4 9.2-3.7 16.9-9.8 23.2-6.1 6.3-14 9.5-23.6 9.5-9.6 0-17.4-3.2-23.6-9.5-7-6.3-9.4-14-9.7-23.2v-33.3c.3-9.1 3.7-16.9 10-23.2 6.3-6.3 14.1-9.6 23.3-10 9.2.4 17 3.7 23.3 10z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="harrysun:<harrysunv9x@outlook.com>" target="_blank" rel="noopener" title="Email" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m20 8-8 5-8-5V6l8 5 8-5m0-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.instant", "navigation.tabs", "navigation.tracking", "navigation.sections", "navigation.expand", "navigation.prune", "toc.follow", "navigation.top", "search.suggest", "search.highlight", "search.share", "navigation.footer", "content.code.copy", "content.tabs.link"], "search": "../../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.bd41221c.min.js"></script>
+      
+        <script src="../../../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

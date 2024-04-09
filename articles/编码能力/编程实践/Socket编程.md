@@ -308,3 +308,80 @@ int recvFunction() {
 memmove的理解如图：
 
 ![image-20240403103620754](.\memmove图示.png)
+
+**I/O 多路复用：select/poll/epoll**
+
+一个socket连接，在recv的时候是阻塞的。
+
+如果我们有一个socket服务端，上面建立了两个socket连接。如果要同时recv这两个socket，那么最初步的想法就是通过多线程的方式，每一个socket建立一个线程。
+
+多线程存在的问题：
+
+①多线程固有问题：多线程编程需要考虑同步机制，以确保共享数据的一致性。
+
+②资源浪费：recv时，线程会进行轮询，占用CPU资源。
+
+系统提供了一个机制来实现一个进程来维护多个 Socket，以降低多线程的性能损耗：通过一个轮询多个socket是否有数据到来，对有数据的socket进行处理，这里成为多路复用。
+
+**select/poll**
+
+select 实现多路复用的方式：提供一个集合FdSet，将要监听的socket添加到这个集合里。通过内核检查这些socket是否有网络事件发生，对有事件的socket进行标记，然后返回。
+
+select 使用固定长度的 BitsMap，表示文件描述符集合，而且所支持的文件描述符的个数是有限制的，在 Linux 系统中，由内核中的 FD_SETSIZE 限制， 默认最大值为 `1024`，只能监听 0~1023 的文件描述符。
+
+poll 不再用 BitsMap 来存储所关注的文件描述符，取而代之用动态数组，以链表形式来组织，突破了 select 的文件描述符个数限制，当然还会受到系统文件描述符限制。
+
+这里只对select举例：
+
+```C++
+fd_set fdSet;
+maxFd = -1;
+
+FD_ZERO(&fdSet);
+
+int accept_socketA = accept(socketFD, NULL, NULL);
+int accept_socketB = accept(socketFD, NULL, NULL);
+int accept_socketC = accept(socketFD, NULL, NULL);
+int accept_socketD = accept(socketFD, NULL, NULL);
+
+FD_SET(accept_socketA, &fdSet);
+maxFd = (accept_socketA > maxFd) ? accept_socketA : maxFd;
+FD_SET(accept_socketB, &fdSet);
+maxFd = (accept_socketB > maxFd) ? accept_socketB : maxFd;  
+FD_SET(accept_socketC, &fdSet);
+maxFd = (accept_socketC > maxFd) ? accept_socketC : maxFd;  
+FD_SET(accept_socketD, &fdSet);
+maxFd = (accept_socketD > maxFd) ? accept_socketD : maxFd;  
+
+int ret = select(maxFd + 1, &fdSet, NULL, NULL, NULL);
+if(ret < 0) {
+	return ;
+}
+
+if (FD_ISSET(accept_socketA, &fdSet)) {
+	// recv并处理
+}
+if (FD_ISSET(accept_socketB, &fdSet)) {
+	// recv并处理
+}
+if (FD_ISSET(accept_socketC, &fdSet)) {
+	// recv并处理
+}
+if (FD_ISSET(accept_socketD, &fdSet)) {
+	// recv并处理
+}
+
+close(accept_socketA);
+accept_socketA = -1					// 关闭并不再检测socket变化
+```
+
+**epoll**
+
+epoll 通过两个方面，很好解决了 select/poll 的问题。
+
+*第一点*，在内核里使用**红黑树来跟踪进程所有待检测的文件描述字**。
+
+*第二点*， epoll 使用**事件驱动**的机制，以链表**记录就绪事件**，避免轮询。
+
+使用参考：
+https://subingwen.cn/linux/epoll/index.html

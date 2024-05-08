@@ -97,3 +97,181 @@ data:2024-04-24
 6、估量误差
 
 几个步骤。对于不同的模型，
+
+# 前后端搭建
+
+本节推荐搭建方式：ollama + langchain.
+
+**安装依赖**
+
+```txt
+# pip install -r requirements.txt
+fastapi==0.110.2
+langchain==0.1.16
+langserve==0.1.0
+sse-starlette==2.1.0
+pydantic==1.10.13
+```
+
+**基础搭建**
+
+```python
+from langchain_community.llms import Ollama					# llm
+from langchain_core.prompts import ChatPromptTemplate		# prompt
+from langchain_core.output_parsers import StrOutputParser	# output_parser
+
+llm = Ollama(model="llama3")
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are a world class technical documentation writer."),
+    ("user", "{input}")
+])
+output_parser = StrOutputParser()
+
+chain = prompt | llm | output_parser
+chain.invoke({"input": "how can langsmith help with testing?"})
+```
+
+**基于历史的服务端搭建**
+
+```python
+from typing import Tuple, List
+
+from langchain_community.llms import Ollama										# llm
+
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder		# prompts
+from langchain.prompts.prompt import PromptTemplate
+
+from langchain_core.output_parsers import StrOutputParser						# output_parser
+
+from fastapi import FastAPI														# fastapi
+from fastapi.middleware.cors import CORSMiddleware
+
+from langserve import add_routes												# langserve
+from langserve.pydantic_v1 import BaseModel, Field
+
+from langchain.schema.runnable import RunnableMap, RunnablePassthrough			# input
+
+llm = Ollama(model="llama3")
+output_parser = StrOutputParser()
+
+_TEMPLATE = """鉴于以下对话和后续问题，请将后续问题重新表述为一个独立的问题
+
+历史对话:
+{chat_history}
+Follow Up Input: {question}
+Standalone question:"""
+CONDENSE_QUESTION_PROMPT = PromptTemplate.from_template(_TEMPLATE)
+
+
+def _format_chat_history(chat_history: List[Tuple]) -> str:
+    """Format chat history into a string."""
+    buffer = ""
+    for dialogue_turn in chat_history:
+        human = "Human: " + dialogue_turn[0]
+        ai = "Assistant: " + dialogue_turn[1]
+        buffer += "\n" + "\n".join([human, ai])
+    return buffer
+
+
+ANSWER_TEMPLATE = """
+无论什么情况下，都使用中文回答：
+
+Question: {question}
+"""
+ANSWER_PROMPT = ChatPromptTemplate.from_template(ANSWER_TEMPLATE)
+
+_question = {
+    "question": lambda x: x["standalone_question"],
+}
+
+_inputs = RunnableMap(
+    standalone_question=RunnablePassthrough.assign(
+        chat_history=lambda x: _format_chat_history(x["chat_history"])
+    )
+                        | CONDENSE_QUESTION_PROMPT
+                        | llm
+                        | StrOutputParser(),
+)
+
+
+# User input
+class ChatHistory(BaseModel):
+    """Chat history with the bot."""
+
+    chat_history: List[Tuple[str, str]] = Field(
+        ...,
+        extra={"widget": {"type": "chat", "input": "question"}},
+    )
+    question: str
+
+
+conversational_qa_chain = (
+        _inputs | _question | ANSWER_PROMPT | llm | StrOutputParser()
+)
+chain = conversational_qa_chain.with_types(input_type=ChatHistory)
+
+app = FastAPI(
+    title="LangChain Server",
+    version="1.0",
+    description="A simple api server using Langchain's Runnable interfaces",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+)
+
+add_routes(
+    app,
+    chain,
+    path="/llama3",
+)
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="localhost", port=8000)
+```
+
+**前端调用**
+
+```tsx
+// {"input": {
+//     "chat_history": [
+//         ["user", "嘻嘻嘻"],
+//         ["Assistant","了解"]
+//     ],
+//         "question": "你好，今天感觉怎么样"
+// }}
+
+// setChatHistory(JSON.stringify([...JSON.parse(chatHistory), {Human: inputText}]))
+// setChatHistory(JSON.stringify([...JSON.parse(chatHistory), {Assistant: data.output}]))
+
+fetch(LLM_ADDRESS, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "input": {
+                "chat_history": chat_history,
+                "question": inputText
+            }
+        })
+    }).then((res) => res.json())
+        .then((data) => {
+            setChatHistory((prevChatHistory) =>
+                JSON.stringify([
+                    ...JSON.parse(prevChatHistory),
+                    {Assistant: data.output},
+                ])
+            );
+            setLoadingState(false);
+        });
+    setInputText('');
+};
+```
+

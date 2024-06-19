@@ -158,16 +158,20 @@ wsl --install
    ```
 
    ```
-   deb http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
-   deb-src http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
-   deb http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
-   deb-src http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
-   deb http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse
-   deb-src http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse
-   deb http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
-   deb-src http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
-   deb http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse
-   deb-src http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse
+   deb https://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
+   deb-src https://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
+   
+   deb https://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
+   deb-src https://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
+   
+   deb https://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse
+   deb-src https://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse
+   
+   deb https://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse
+   deb-src https://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse
+   
+   deb https://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
+   deb-src https://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
    ```
 
    ```
@@ -207,7 +211,6 @@ wsl --install
     
     sudo ln -s /usr/bin/python3 /usr/bin/python
     repo init -u git@gitee.com:openharmony/manifest.git -b master --no-repo-verify
-    repo init -u https://gitee.com/openharmony/manifest --no-repo-verify
     repo sync -c
     repo forall -c 'git lfs pull'
     ```
@@ -218,9 +221,22 @@ wsl --install
     sudo apt-get update && sudo apt-get install binutils binutils-dev git git-lfs gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib gcc-arm-linux-gnueabi libc6-dev-i386 libc6-dev-amd64 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z1-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip m4 bc gnutls-bin python3.8 python3-pip ruby genext2fs device-tree-compiler make libffi-dev e2fsprogs pkg-config perl openssl libssl-dev libelf-dev libdwarf-dev u-boot-tools mtd-utils cpio doxygen liblz4-tool openjdk-8-jre gcc g++ texinfo dosfstools mtools default-jre default-jdk libncurses5 apt-utils wget scons python3.8-distutils tar rsync git-core libxml2-dev lib32z-dev grsync xxd libglib2.0-dev libpixman-1-dev kmod jfsutils reiserfsprogs xfsprogs squashfs-tools pcmciautils quota ppp libtinfo-dev libtinfo5 libncurses5-dev libncursesw5 libstdc++6 gcc-arm-none-eabi vim ssh locales libxinerama-dev libxcursor-dev libxrandr-dev libxi-dev
     ```
 
-12. 
+12. 预编译
 
     ```
+    sudo apt-get update && sudo apt-get install binutils git git-lfs gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev genext2fs liblz4-tool libssl-dev libtinfo5 lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip m4 bc gnutls-bin python3.8 python3-pip ruby default-jdk u-boot-tools mtools mtd-utils scons gcc-arm-none-eabi 
+    ```
+
+13. 下载工具
+
+    ```
+    ./build/prebuilts_download.sh
+    ```
+
+13. build
+
+    ```
+    ./build.sh --product-name rk3568 --fast--rebuild --build-target SP_daemon
+    ```
+
     
-    ```
-

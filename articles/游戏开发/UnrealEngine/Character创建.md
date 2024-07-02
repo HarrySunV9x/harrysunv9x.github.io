@@ -40,7 +40,7 @@ UObjectBase
 
 **ACharacter**：具有网格（mesh）、碰撞（collision）和内置移动逻辑的Pawns（角色）。
 
-为了更好的理解Unreal的这些内容，我们通过官方文档[Gameplay Framework](https://docs.unrealengine.com/5.3/en-US/gameplay-framework-in-unreal-engine/)进行进一步了解。
+为了更好的理解Unreal的这些内容，我们通过官方文档[Gameplay Framework](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-framework-in-unreal-engine)进行进一步了解。
 
 ## Gameplay Framework
 
@@ -58,7 +58,7 @@ UObjectBase
 
 ## 角色（Acter的生命周期）
 
-参考文档：[Actor Lifecycle](https://docs.unrealengine.com/5.3/en-US/unreal-engine-actor-lifecycle/)
+参考文档：[Actor Lifecycle](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-actor-lifecycle)
 
 本节将介绍：
 
